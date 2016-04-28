@@ -12,14 +12,12 @@ var api = require('./routes/api');
 // Configuration file
 var config = require('./config.js');
 
+// Database client
+var db = require('./client/database.js');
+
 // Redis Store Session
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
-
-// Initialize the postgres database
-var options = {};
-var pgp = require('pg-promise')(options);
-var db = pgp(config.postgres_url);
 
 // Initialize the application
 var app = express();
@@ -29,6 +27,12 @@ app.use(session({
     store: new RedisStore(),
     secret: config.redis_secret
 }));
+
+// Make our database accessible to our router
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -41,22 +45,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
-// Make our database accessible to our router
-app.use(function(req,res,next){
-    req.db = db;
-    next();
-});
-
-/* EXAMPLE DB QUERY
-  req.db.any("select * from users")
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
-*/
 
 app.use('/', routes);
 app.use('/api', api);
