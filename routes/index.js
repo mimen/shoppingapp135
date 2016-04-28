@@ -28,6 +28,10 @@ router.get('/login', function(req, res, next) {
 
 /* GET home page. */
 router.get('/home', function(req, res, next) {
+ 
+  //var usertype = req.session.user.type;
+  //var isOwner = (usertype == 'owner');
+  //res.render('home', isOwner);
   res.render('home');
 });
 

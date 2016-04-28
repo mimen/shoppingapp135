@@ -5,17 +5,34 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Routes
 var routes = require('./routes/index');
-var users = require('./routes/users');
+var api = require('./routes/api');
 
+// Configuration file
 var config = require('./config.js');
 
+// Database client
+var db = require('./client/database.js');
+
+// Redis Store Session
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
+
+// Initialize the application
 var app = express();
 
+// Create session manager using a Redis store.
+app.use(session({
+    store: new RedisStore(),
+    secret: config.redis_secret
+}));
 
-var options = {};
-var pgp = require('pg-promise')(options);
-var db = pgp(config.postgres_url);
+// Make our database accessible to our router
+app.use(function(req,res,next){
+    req.db = db;
+    next();
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,24 +46,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Make our database accessible to our router
-app.use(function(req,res,next){
-    req.db = db;
-    next();
-});
-
-/* EXAMPLE DB QUERY
-  req.db.any("select * from users")
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
-*/
-
 app.use('/', routes);
-app.use('/users', users);
+app.use('/api', api);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
