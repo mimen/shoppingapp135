@@ -8,7 +8,22 @@ var bodyParser = require('body-parser');
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+var config = require('./config.js');
+
 var app = express();
+
+var pg = require('pg');
+var client = new pg.Client(config.postgres_url);
+
+client.connect(function(err) {
+  if(err) {
+    console.log(err);
+  }
+  else {
+    console.log("yay");
+    client.end();
+  }
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -21,6 +36,12 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Make our database accessible to our router
+app.use(function(req,res,next){
+    req.db = client;
+    next();
+});
 
 app.use('/', routes);
 app.use('/users', users);
