@@ -5,17 +5,30 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+// Routes
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
+// Configuration file
 var config = require('./config.js');
 
-var app = express();
+// Redis Store Session
+var session = require('express-session');
+var RedisStore = require('connect-redis')(session);
 
-
+// Initialize the postgres database
 var options = {};
 var pgp = require('pg-promise')(options);
 var db = pgp(config.postgres_url);
+
+// Initialize the application
+var app = express();
+
+// Create session manager using a Redis store.
+app.use(session({
+    store: new RedisStore(),
+    secret: config.redis_secret
+}));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -31,6 +44,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Make our database accessible to our router
 app.use(function(req,res,next){
+    console.log(req.session);
     req.db = db;
     next();
 });
