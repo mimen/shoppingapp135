@@ -32,18 +32,18 @@ router.get('/products', function(req, res, next) {
 });
 
 /* GET products_browsing page. */
-router.get('/products_browsing', function(req, res, next) {
-  res.render('products_browsing');
+router.get('/productsbrowsing', function(req, res, next) {
+  res.render('productsbrowsing');
 });
 
 /* GET product_order page. */
-router.get('/product_order', function(req, res, next) {
-  res.render('product_order');
+router.get('/productorder', function(req, res, next) {
+  res.render('productorder');
 });
 
 /* GET buy_shopping_cart page. */
-router.get('/buy_shopping_cart', function(req, res, next) {
-  res.render('buy_shopping_cart');
+router.get('/buyshoppingcart', function(req, res, next) {
+  res.render('buyshoppingcart');
 });
 
 /* GET confirmation page. */
