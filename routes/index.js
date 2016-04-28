@@ -11,6 +11,16 @@ router.get('/signup', function(req, res, next) {
   res.render('signup');
 });
 
+/* GET signup success page. */
+router.get('/signup/success', function(req, res, next) {
+  res.render('success');
+});
+
+/* GET signup failure page. */
+router.get('/signup/failure', function(req, res, next) {
+  res.render('failure');
+});
+
 /* GET login page. */
 router.get('/login', function(req, res, next) {
   res.render('login');
