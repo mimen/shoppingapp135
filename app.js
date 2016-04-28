@@ -12,18 +12,10 @@ var config = require('./config.js');
 
 var app = express();
 
-var pg = require('pg');
-var client = new pg.Client(config.postgres_url);
 
-client.connect(function(err) {
-  if(err) {
-    console.log(err);
-  }
-  else {
-    console.log("yay");
-    client.end();
-  }
-});
+var options = {};
+var pgp = require('pg-promise')(options);
+var db = pgp(config.postgres_url);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,9 +31,19 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Make our database accessible to our router
 app.use(function(req,res,next){
-    req.db = client;
+    req.db = db;
     next();
 });
+
+/* EXAMPLE DB QUERY
+  req.db.any("select * from users")
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+       console.log(error);
+    });
+*/
 
 app.use('/', routes);
 app.use('/users', users);
