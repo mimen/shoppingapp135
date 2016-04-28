@@ -23,6 +23,14 @@ router.get('/home', function(req, res, next) {
 
 /* GET categories page. */
 router.get('/categories', function(req, res, next) {
+    req.db.any("select * from users")
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (error) {
+       console.log(error);
+    });
+
   res.render('categories');
 });
 
