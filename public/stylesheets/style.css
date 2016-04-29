@@ -78,3 +78,17 @@ a {
 	border-width: thin;
 	width: 400px;
 }
+
+#form_products_left {
+	border-style: solid;
+	border-width: thin;
+	width: 20%;
+	padding: 10px;
+}
+
+#form_products_right {
+	border-style: solid;
+	border-width: thin;
+	width: 40%;
+	padding: 10px;
+}
