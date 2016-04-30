@@ -84,11 +84,13 @@ a {
 	border-width: thin;
 	width: 20%;
 	padding: 10px;
+	padding-left: 15px;
 }
 
 #form_products_right {
 	border-style: solid;
 	border-width: thin;
-	width: 40%;
+	width: 35%;
 	padding: 10px;
+	padding-left: 15px;
 }

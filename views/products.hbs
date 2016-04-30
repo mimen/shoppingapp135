@@ -14,20 +14,30 @@
 		<a href="#">Category A</a><br>
 		<a href="#">Category B</a><br>
   	</div>
-  	<div class="form-group col-md-5" id = "form_products_right">
-  		<h3>Products</h3>
-			<div class = "form-inline form-group">
-	  			<label class="col-md-offset-1 control-label">Name</label>
-	  			<input id="product_name" class="form-control col-md-offset-1" type="text" name="name">
-			</div>
-			<div class = "form-inline form-group">
-	  			<label class="col-md-offset-1 control-label">SKU</label>
-	  			<input id="sku_name" class="form-control col-md-offset-1" type="text" name="sku">
-			</div>
+	  	<div class="form-group col-md-5" id = "form_products_right">
+	  		<h3>Products</h3>
+	  		<form class="form-horizontal">
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">Name</label>
+		  			<input id="product_name" class="form-control col-md-offset-1" type="text" name="name">
+				</div>
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">SKU</label>
+		  			<input id="sku_name" class="form-control col-md-offset-1" type="text" name="sku">
+				</div>
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">Category</label>
+		  			<input id="category_name" class="form-control col-md-offset-1" type="text" name="category">
+				</div>
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">Type</label>
+		  			<input id="type_name" class="form-control col-md-offset-1" type="text" name="type">
+				</div>
+			</form>
 			<br>
 			<div class = "form-inline form-group">
-				<button type="submit" class="btn btn-primary col-sm-offset-1">Update</button>
+				<button type="submit" class="btn btn-primary col-sm-offset-0">Update</button>
 				<button type="submit" class="btn btn-primary col-sm-offset-0">Delete</button>
 			</div>
-  	</div>
+	  	</div>
 </div>
