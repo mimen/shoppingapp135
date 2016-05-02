@@ -1,6 +1,11 @@
 var express = require('express');
 var router = express.Router();
 
+var verifyCustomer = require('./middleware/verifyCustomer.js');
+var verifyOwner = require('./middleware/verifyOwner.js');
+var verifyLoggedIn = require('./middleware/verifyLoggedIn.js');
+var verifyLoggedOut = require('./middleware/verifyLoggedOut.js');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.redirect('/home/');
