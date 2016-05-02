@@ -1,7 +1,19 @@
-<h1>LOG IN</h1>
-
-<form action="login_form.asp">
-  Login Name: <input type="text" name="fname"><br>
-  <br>
-  <input type="submit" value="Log in you stupid bitch">
+<h1>Log In</h1>
+<br>
+<form class="form-horizontal">
+	<div class="form-inline form-group">
+  		<label class="col-sm-1 control-label">Name</label>
+  		<input id="login_name" class="form-control col-sm-offset-0" type="text" name="name">
+  	</div>
+  	<br>
+  	<div class="form-group">
+  		<button type="submit" class="col-sm-offset-1 btn btn-success btn-lg">Log In</button>
+  	</div>
+  	<br>
+  	<div class="form-group">
+		<label class="col-sm-offset-0 col-sm-offset-1 control-label">Don't have an account?</label>
+		<a role="button" class="col-sm-offset-0 btn btn-default" href = "../signup/">Sign Up Here</a> 
+ 	</div>
 </form>
+
+<script src="../js/login.js"></script>

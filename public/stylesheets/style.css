@@ -1,17 +1,29 @@
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 16px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
 
 a {
   color: #00B7FF;
 }
 
+/* SIGNUP PAGE */
+
+#name {
+	padding: 5px;
+	font-size: 16px;
+}
+
+#age {
+	padding: 5px;
+	font-size: 16px;
+}
+
 /* Dropdown Button */
 .dropbtn {
     background-color: #4CAF50;
     color: white;
-    padding: 16px;
+    padding: 12px;
     font-size: 16px;
     border: none;
     cursor: pointer;
@@ -51,4 +63,37 @@ a {
 /* Change the background color of the dropdown button when the dropdown content is shown */
 .dropdown:hover .dropbtn {
     background-color: #3e8e41;
+}
+
+#submit {
+	padding: 10px;
+	font-size: 16px;
+}
+
+
+/* CATEGORY PAGE */
+
+#form_category {
+	border-style: solid;
+	border-width: thin;
+	width: 400px;
+}
+
+
+/* PRODUCTS PAGE */
+
+#form_products_left {
+	border-style: solid;
+	border-width: thin;
+	width: 20%;
+	padding: 10px;
+	padding-left: 15px;
+}
+
+#form_products_right {
+	border-style: solid;
+	border-width: thin;
+	width: 35%;
+	padding: 10px;
+	padding-left: 15px;
 }

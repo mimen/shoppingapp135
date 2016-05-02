@@ -1,2 +1,66 @@
-<h1>PRODUCTS</h1>
-<p>shit</p>
+{{#if isOwner}}
+
+<h1>Products</h1>
+
+<div class = "row">
+	<div class = "form-inline form-group col-md-offset-0">
+		<a class="btn btn-default col-sm-offset-0" role="button" href = "../categories/">Categories</a>
+		<a class="btn btn-default col-sm-offset-0" role="button" href = "../products/">Products</a>
+		<a class="btn btn-default col-sm-offset-0" role="button" href = "../productorder/">Product Order</a>
+		<a class="btn btn-default col-sm-offset-0" role="button" href = "../productsbrowsing/">Products Browsing</a>
+		<a class="btn btn-default col-sm-offset-0" role="button" href = "../buyshoppingcart/">Buy Shopping Cart</a>
+	</div>
+</div>
+
+<div class="row">
+	<div class = "form-inline form-group col-md-offset-3">
+		<input id="name" class="form-control" type="text" name="search" placeholder="Search">
+		<button type="submit" class="btn btn-success btn-lg col-md-offset-1">Insert</button>
+	</div>
+</div>
+
+<div class="row">
+  	<div class="form-group col-md-3" id = "form_products_left">
+  		<h3>Categories</h3>
+		<a href="#">All Products</a><br>
+		<a href="#">Category A</a><br>
+		<a href="#">Category B</a><br>
+  	</div>
+	  	<div class="form-group col-md-5" id = "form_products_right">
+	  		<h3>Products</h3>
+	  		<form class="form-horizontal">
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">Name</label>
+		  			<input id="product_name" class="form-control col-md-offset-1" type="text" name="name">
+				</div>
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">SKU</label>
+		  			<input id="sku_name" class="form-control col-md-offset-1" type="text" name="sku">
+				</div>
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">Category</label>
+		  			<div class="dropdown">
+						<button id="category_button" class="form-control col-md-offset-6 btn btn-default">Category</button>
+						<div class="dropdown-content">
+							<a class = "category" href="#">Category A</a>
+							<a class = "category" href="#">Category B</a>
+						</div>
+					</div>
+				</div>
+				<div class = "form-inline form-group">
+		  			<label class="col-md-1 control-label">Price</label>
+		  			<input id="type_name" class="form-control col-md-offset-1" type="text" name="type">
+				</div>
+			</form>
+			<br>
+			<div class = "form-inline form-group">
+				<button type="submit" class="btn btn-primary col-sm-offset-0">Update</button>
+				<button type="submit" class="btn btn-primary col-sm-offset-0">Delete</button>
+			</div>
+	  	</div>
+</div>
+
+{{else}}
+	<h2>This page is available to owners only.</h2>
+{{/if}}
+<script src="../js/products.js"></script>
