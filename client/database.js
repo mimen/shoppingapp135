@@ -35,41 +35,36 @@ initializeTables = function(){
 }
 
 /*
-CREATE TABLE Product
-( 
-  productID char[50] NOT NULL,
-  categoryID char[50] NOT NULL,
-  SKU int NOT NULL,
-  price int NOT NULL
-);
-CREATE TABLE Category
-( 
-  categoryID char[50] NOT NULL,
-  description char[150] NOT NULL
-);
-CREATE TABLE Order
-( 
-  orderID int NOT NULL,
-  date char[50] NOT NULL,
-  userID char[50] NOT NULL,
-  orderNumber int NOT NULL
-);
-CREATE TABLE OrderItem
-( 
-  itemID char[50] NOT NULL,
-  productID char[50] NOT NULL,
-  orderID int NOT NULL,
-  quantity int NOT NULL,
-  price double NOT NULL
-);
+
+  var query = "CREATE TABLE Product(" + 
+    "productID char(50) PRIMARY KEY," +
+    "categoryID char(50) NOT NULL," +
+    "SKU int NOT NULL," +
+    "price int NOT NULL" +
+    ");";
+
+  var query = "CREATE TABLE Category(" + 
+    "categoryID char(50) PRIMARY KEY," +
+    "description  char(50) NOT NULL," +
+    ");";
+
+  var query = "CREATE TABLE Order(" + 
+    "orderID int PRIMARY KEY," +
+    "date char(50) NOT NULL," +
+    "userID char[50] NOT NULL," +
+    "orderNumber int NOT NULL" +
+    ");";
+
+  var query = "CREATE TABLE OrderItem(" + 
+    "itemID char(50) PRIMARY KEY," +
+    "productID char(50) NOT NULL," +
+    "orderID int NOT NULL," +
+    "quantity int NOT NULL," +
+    "price int NOT NULL" +
+    ");";
+
 */
 
-/*
-
-
-
-  
-  */
 
 
 addUser = function(name, type, age, state, done){
@@ -91,8 +86,20 @@ addUser = function(name, type, age, state, done){
     });
 }
 
-getUser = function(name){
+getUser = function(name, done){
+    var query = "SELECT * FROM Users" +
+        "WHERE username = '"+ name +"';";
 
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+    });
+    
 }
 
 createCategory = function(name, description, owner){
