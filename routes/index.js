@@ -6,8 +6,12 @@ var verifyOwner = require('./middleware/verifyOwner.js');
 var verifyLoggedIn = require('./middleware/verifyLoggedIn.js');
 var verifyLoggedOut = require('./middleware/verifyLoggedOut.js');
 
+var db = require('../client/database.js');
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
+  db.initialize();
+  db.addUser("asdf", "customer", 21, "CA");
   res.redirect('/home/');
 });
 
@@ -16,14 +20,13 @@ router.get('/signup', function(req, res, next) {
   res.render('signup');
 });
 
-/* GET signup success page. */
-router.get('/signup/success', function(req, res, next) {
-  res.render('success');
-});
-
-/* GET signup failure page. */
-router.get('/signup/failure', function(req, res, next) {
-  res.render('failure');
+router.get('/signup/submit/', function(req, res, next){
+  db.addUser(req.query.username, req.query.type, req.query.age, req.query.state, function(success){
+    if (success)
+      res.render('success');
+    else
+      res.render('failure');
+  });
 });
 
 /* GET login page. */
