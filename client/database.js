@@ -99,10 +99,10 @@ getUser = function(name, done){
       console.log(error);
       done(false);
     });
-    
+
 }
 
-createCategory = function(name, description, owner){
+addCategory = function(name, description, owner){
 
 }
 
