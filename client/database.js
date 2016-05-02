@@ -7,7 +7,6 @@ var options = {};
 var pgp = require('pg-promise')(options);
 var db = pgp(config.postgres_url);
 
-
 /* EXAMPLE DB QUERY
   req.db.any("select * from users")
     .then(function (data) {

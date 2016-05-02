@@ -13,7 +13,7 @@ var api = require('./routes/api');
 var config = require('./config.js');
 
 // Database client
-var db = require('./client/database.js');
+var db = require('./client/database.js').instance;
 
 // Redis Store Session
 var session = require('express-session');
