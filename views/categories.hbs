@@ -1,4 +1,4 @@
-<!--<a>This page is available to owners only.</a>-->
+{{#if isOwner}}
 
 <h1>Categories</h1>
 
@@ -34,4 +34,7 @@
 	<button type="submit" class="btn btn-success btn-lg col-sm-offset-0">Insert</button>
 </div>
 
+{{else}}
+	<h2>This page is available to owners only.</h2>
+{{/if}}
 <script src="../js/categories.js"></script>

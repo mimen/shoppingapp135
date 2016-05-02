@@ -33,21 +33,23 @@ router.get('/login', function(req, res, next) {
 
 /* GET home page. */
 router.get('/home', function(req, res, next) {
- 
-  //var usertype = req.session.user.type;
-  //var isOwner = (usertype == 'owner');
-  //res.render('home', isOwner);
-  res.render('home');
+  console.log(req.session.user);
+  var isOwner = req.session.user.type == "owner";
+  res.render('home', {isOwner:isOwner});
 });
 
 /* GET categories page. */
 router.get('/categories', function(req, res, next) {
-  res.render('categories');
+  console.log(req.session.user);
+  var isOwner = req.session.user.type == "owner";
+  res.render('categories', {isOwner:isOwner});
 });
 
 /* GET products page. */
 router.get('/products', function(req, res, next) {
-  res.render('products');
+  console.log(req.session.user);
+  var isOwner = req.session.user.type == "owner";
+  res.render('products', {isOwner:isOwner});
 });
 
 /* GET products_browsing page. */
