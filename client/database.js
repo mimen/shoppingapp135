@@ -188,6 +188,22 @@ selectProductsWithSearch = function(search_string){
   });
 }
 
+getCategoriesFromUser = function(username){
+
+  var query = "SELECT * FROM Categories" +
+    "WHERE username = '" + username +"';" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+}
+
 addCategory = function(name, description, owner){
   var query = "INSERT INTO Categories" +
         "(categoryname, description, username) " + 
