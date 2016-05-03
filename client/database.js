@@ -156,8 +156,8 @@ addCategory = function(name, description, owner){
 }
 
 updateCategory = function(cur_name, new_name, new_description, owner){
-  var query = "UPDATE Category" +
-        "SET categoryname = '"+ new_name + "', description = '" + new_description + "'"+
+  var query = "UPDATE Category " +
+        "SET categoryname = '"+ new_name + "', description = '" + new_description + "' "+
         "WHERE categoryname = '" + cur_name +"';";
 
   db.any(query)
@@ -173,7 +173,7 @@ updateCategory = function(cur_name, new_name, new_description, owner){
 }
 
 deleteCategory = function(category_name){
-  var query = "DELETE FROM Category" +
+  var query = "DELETE FROM Category " +
         "WHERE categoryname = '" + category_name + "';";
 
   db.any(query)
