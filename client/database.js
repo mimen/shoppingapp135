@@ -26,18 +26,18 @@ initializeTables = function(){
 		"state char(2) NOT NULL" +
 		");";
 
-	var query2 = "CREATE TABLE Products(" + 
-		"productname char(50) PRIMARY KEY," +
-		"categoryname char(50) REFERENCES Categories(categoryname)," +
-		"SKU int NOT NULL UNIQUE," +
-		"price int NOT NULL" +
-		");";
+	var query2 = "CREATE TABLE Categories(" + 
+    "categoryname char(50) PRIMARY KEY," +
+    "description char(50) NOT NULL," +
+    "username char(50) REFERENCES Users(username)" +
+    ");";
 
-	var query3 = "CREATE TABLE Categories(" + 
-		"categoryname char(50) PRIMARY KEY," +
-		"description char(50) NOT NULL," +
-		"username char(50) REFERENCES Users(username)" +
-		");";
+	var query3 = "CREATE TABLE Products(" + 
+    "productname char(50) PRIMARY KEY," +
+    "categoryname char(50) REFERENCES Categories(categoryname)," +
+    "SKU int NOT NULL UNIQUE," +
+    "price int NOT NULL" +
+    ");";
 
 	var query4 = "CREATE TABLE Orders(" +
 		"ordername char(50) PRIMARY KEY," +
@@ -158,7 +158,7 @@ addProduct = function(productname, categoryname, SKU, price, done){
 
 getProductsInCategory = function(categoryname, done){
 
-  var query = "SELECT * FROM Categories" +
+  var query = "SELECT * FROM Categories " +
     "WHERE categoryname = '" + categoryname +"';" ;
 
   db.any(query)
@@ -174,7 +174,7 @@ getProductsInCategory = function(categoryname, done){
 
 selectProductsWithSearch = function(search_string, done){
 
-  var query = "SELECT * FROM Products" +
+  var query = "SELECT * FROM Products " +
     "WHERE productname LIKE '%" + search_string +"%';" ;
 
   db.any(query)
@@ -205,7 +205,7 @@ getCategoriesFromUser = function(username, done){
 }
 
 addCategory = function(name, description, owner, done){
-  var query = "INSERT INTO Categories" +
+  var query = "INSERT INTO Categories " +
         "(categoryname, description, username) " + 
          "VALUES ('"
           + name + "', '"
@@ -253,7 +253,6 @@ deleteCategory = function(category_name, done){
       console.log(error);
       done(false);
   });
-
 }
 
 module.exports = {
