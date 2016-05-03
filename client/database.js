@@ -200,6 +200,39 @@ getProductsInCategory = function(categoryname, search_string, done){
   });
 }
 
+updateProduct = function(pid, new_name, new_price, new_sku, new_category, done){
+  var query = "UPDATE Products " +
+        "SET productname = '"+ new_name + "', price = '" + new_price 
+        + "', sku = '"+ new_sku + "', categoryname = '" + new_category +"' " +
+        "WHERE pid = '" + pid +"';";
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+}
+
+deleteProduct = function(pid, done){
+  var query = "DELETE FROM Products " +
+        "WHERE pid = '" + pid + "';";
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+
+}
+
 getCategories = function(done){
 
   var query = "SELECT c.*, COUNT(p.pid) as productCount FROM Categories c " +
@@ -278,6 +311,8 @@ module.exports = {
 	getCategories: getCategories,
   getProducts: getProducts,
 	getProductsInCategory: getProductsInCategory,
+  updateProduct: updateProduct,
+  deleteProduct: deleteProduct,
 	addCategory: addCategory,
 	updateCategory: updateCategory,
 	deleteCategory: deleteCategory
