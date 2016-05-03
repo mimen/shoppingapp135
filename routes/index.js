@@ -39,10 +39,10 @@ router.get('/signup/submit/', verifyLoggedOut, function(req, res, next){
 router.get('/categories/submit/', verifyLoggedOut, function(req, res, next){
   db.addCategory(req.query.categoryname, req.query.description, function(success){
     if (success){
-      res.render('success', {username:req.query.username});
+      res.render('categories');
     }
     else
-      res.render('failure');
+      res.render('categories');
   });
 });
 
