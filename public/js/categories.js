@@ -1,4 +1,3 @@
-
 var app = angular.module("Categories", []);
 
 app.factory("httpLoader", ["$http", function ($http) {
@@ -19,14 +18,12 @@ app.factory("httpLoader", ["$http", function ($http) {
     };
 }]);
 
-
-
 // Library directive - html Element
-app.directive("library", [function (){
+app.directive("categories", [function (){
     return {
         restrict: 'E',
-        templateUrl: 'http://localhost:3000/views/library.html',
-        controller: ["httpLoader", '$http', function (httpLoader, $q, $http, $timeout) {
+        templateUrl: 'http://localhost:3000/views/categories.html',
+        controller: ["httpLoader", '$http', function (httpLoader, $http) {
             var ctlr = this;
 
             // Populate the list of songs
@@ -40,6 +37,25 @@ app.directive("library", [function (){
                         ctlr.categories = result;
                     }
                 });
+            }
+
+            ctlr.updateCategory = function(){
+            	
+            }
+
+            ctlr.deleteCategory = function(category){
+            	
+                if (confirm("Are you sure you want to delete?") == true){
+                    var name = category.categoryname;
+                    var url = 'http://localhost:3000/api/categories/' + name;
+                    $http.delete(url).then(function(response){
+                        console.log(response);
+                        ctlr.loadCategories();
+                    }, function(error){
+                        console.log(error);
+                    })
+                }
+
             }
 
             ctlr.loadCategories();

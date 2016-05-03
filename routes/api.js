@@ -8,7 +8,6 @@ router.get('/', function(req, res, next) {
   res.json({"hello":"world"});
 });
 
-
 /* GET logged in user's collection. */
 router.get('/categories/', function(req, res, next) {
 	// Retrieve the user data from the session.
@@ -23,5 +22,21 @@ router.get('/categories/', function(req, res, next) {
 		}
 	});
 })
+
+/* GET logged in user's collection. */
+router.delete('/categories/:cname', function(req, res, next) {
+	// Retrieve the user data from the session.
+	var name = req.params.cname;
+	// Get the collection from the database and render the json.
+	db.deleteCategory(name, function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else{
+			res.json({"error":"error"});
+		}
+	});
+})
+
 
 module.exports = router;

@@ -271,22 +271,26 @@ deleteCategory = function(category_name, done){
       console.log(error);
       done(false);
   });
+<<<<<<< HEAD
 
 
 
+=======
+>>>>>>> 458e83331377618dcff2058073d2037ea9681381
 }
 
 module.exports = {
 	instance: db,
 	initialize: initializeTables,
 	addUser: addUser,
-  getUser: getUser,
-  addProduct: addProduct,
-  getCategoriesFromUser: getCategoriesFromUser,
-  getProductsInCategory: getProductsInCategory,
-  selectProductsWithSearch: selectProductsWithSearch,
-  addCategory: addCategory,
-  updateCategory: updateCategory,
-  deleteCategory: deleteCategory,
+	getUser: getUser,
+	addProduct: addProduct,
+	getCategoriesFromUser: getCategoriesFromUser,
+	getProductsInCategory: getProductsInCategory,
+	selectProductsWithSearch: selectProductsWithSearch,
+	addCategory: addCategory,
+	updateCategory: updateCategory,
+	deleteCategory: deleteCategory,
   getCategoriesWithCount: getCategoriesWithCount
+
 }
