@@ -1,14 +1,5 @@
 {{#if isOwner}}
 
-<h1>Categories</h1>
-
-<div ng-app="Categories">
-
-
-	{{#if error}}
-	  <h3>Data modification failure.</h3>
-	{{/if}}
-
 	<div class = "row">
 		<div class = "form-inline form-group col-md-offset-0">
 			<a class="btn btn-default col-sm-offset-0" role="button" href = "../categories/">Categories</a>
@@ -19,6 +10,24 @@
 		</div>
 	</div>
 	
+<h1>Categories</h1>
+<br>
+On this page, Owners can:
+<ul>
+<li>View all categories</li>
+<li>Create new categories</li>
+<li>Update categories that belong to them</li>
+<li>Delete empty categories that belong to them</li>
+</ul>
+
+<div ng-app="Categories">
+
+
+	{{#if error}}
+	  <h3>Data modification failure.</h3>
+	{{/if}}
+
+
 <span id="updated_message">Your category was successfully updated.</span>
 
 	<categories>
@@ -47,4 +56,9 @@
 {{else}}
 	<h2>This page is available to owners only.</h2>
 {{/if}}
+
+<script type="text/javascript">
+	var loggedinuser = {{{json username}}};
+</script>
+
 <script src="../js/categories.js"></script>

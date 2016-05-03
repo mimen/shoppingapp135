@@ -28,6 +28,8 @@ app.directive("categories", [function (){
         controller: ["httpLoader", '$http', function (httpLoader, $http) {
             var ctlr = this;
 
+            ctlr.username = loggedinuser;
+
             // Populate the list of songs
             ctlr.loadCategories = function(){
                 httpLoader.load('http://localhost:3000/api/categories', function (err, result) {
