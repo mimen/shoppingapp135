@@ -151,7 +151,7 @@ addCategory = function(name, description, owner){
     .catch(function (error) {
       console.log(error);
       done(false);
-  })
+  });
 
 }
 
@@ -168,7 +168,7 @@ updateCategory = function(cur_name, new_name, new_description, owner){
     .catch(function (error) {
       console.log(error);
       done(false);
-  })
+  });
 
 }
 
@@ -184,7 +184,7 @@ deleteCategory = function(category_name){
     .catch(function (error) {
       console.log(error);
       done(false);
-  })
+  });
 
 }
 
