@@ -200,24 +200,6 @@ getProductsInCategory = function(categoryname, search_string, done){
   });
 }
 
-
-
-selectProductsWithSearch = function(done){
-
-  var query = "SELECT * FROM Products " +
-    "WHERE productname LIKE '%" + search_string +"%';" ;
-
-  db.any(query)
-    .then(function (data) {
-      console.log(data);
-        done(true);
-    })
-    .catch(function (error) {
-      console.log(error);
-      done(false);
-  });
-}
-
 getCategories = function(done){
 
   var query = "SELECT c.*, COUNT(p.pid) as productCount FROM Categories c " +
@@ -234,22 +216,6 @@ getCategories = function(done){
       done(null, false);
   });
 }
-
-getCategoriesWithCount = function(categoryname, done){
-    var query = "SELECT c.*, COUNT(distinct p.productname) AS productCount FROM Categories c " +
-    "LEFT JOIN Products p ON (p.categoryname = '"+ categoryname +"') GROUP BY c.productname;" ;
-
-  db.any(query)
-    .then(function (data) {
-      console.log(data);
-        done(true);
-    })
-    .catch(function (error) {
-      console.log(error);
-      done(false);
-  });
-}
-
 
 addCategory = function(name, description, owner, done){
   var query = "INSERT INTO Categories " +
@@ -312,10 +278,8 @@ module.exports = {
 	getCategories: getCategories,
   getProducts: getProducts,
 	getProductsInCategory: getProductsInCategory,
-	selectProductsWithSearch: selectProductsWithSearch,
 	addCategory: addCategory,
 	updateCategory: updateCategory,
-	deleteCategory: deleteCategory,
-  getCategoriesWithCount: getCategoriesWithCount
+	deleteCategory: deleteCategory
 
 }
