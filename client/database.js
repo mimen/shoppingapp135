@@ -28,7 +28,7 @@ initializeTables = function(){
   var query2 = "CREATE TABLE Product(" + 
     "productname char(50) PRIMARY KEY," +
     "categoryname char(50) FOREIGN KEY REFERENCES Category(categoryname)," +
-    "SKU int NOT NULL," +
+    "SKU int NOT NULL UNIQUE," +
     "price int NOT NULL" +
     ");";
 
@@ -118,7 +118,7 @@ addUser = function(name, type, age, state, done){
 }
 
 getUser = function(name, done){
-  var query = "SELECT * FROM Users" +
+  var query = "SELECT * FROM Users " +
               "WHERE username = '"+ name +"';";
 
   db.any(query)
