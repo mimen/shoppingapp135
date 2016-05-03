@@ -1,5 +1,7 @@
 var app = angular.module("Categories", []);
 
+$('#updated_message').hide();
+
 app.factory("httpLoader", ["$http", function ($http) {
     function load(href, done) {
         $http.get(href)
@@ -39,15 +41,32 @@ app.directive("categories", [function (){
                 });
             }
 
-            ctlr.updateCategory = function(){
-            	
+            ctlr.updateCategory = function(category, index){
+            	console.log("update");
+            	var newname = $('#name' + index).val();
+            	var newdescription = $('#description' + index).val();
+            	var body = {
+            		cid: category.cid,
+            		name: newname,
+            		description: newdescription
+            	};
+            	console.log(body);
+            	var url = 'http://localhost:3000/api/categories/';
+            	$http.put(url, body).then(function(response){
+                        console.log(response);
+                        $('#updated_message').show();
+                        ctlr.loadCategories();
+                    }, function(error){
+                        console.log(error);
+                    })
             }
 
             ctlr.deleteCategory = function(category){
+            	console.log("delete");
             	
                 if (confirm("Are you sure you want to delete?") == true){
-                    var name = category.categoryname;
-                    var url = 'http://localhost:3000/api/categories/' + name;
+                    var cid = category.cid;
+                    var url = 'http://localhost:3000/api/categories/' + cid;
                     $http.delete(url).then(function(response){
                         console.log(response);
                         ctlr.loadCategories();
