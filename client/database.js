@@ -175,6 +175,8 @@ getProductsInCategory = function(categoryname, done){
   });
 }
 
+
+
 selectProductsWithSearch = function(search_string, done){
 
   var query = "SELECT * FROM Products " +
@@ -206,6 +208,22 @@ getCategoriesFromUser = function(username, done){
       done(null, false);
   });
 }
+
+getCategoriesWithCount = function(categoryname, done){
+    var query = "SELECT c.*, COUNT(distinct p.productname) AS productCount FROM Categories c " +
+    "LEFT JOIN Products p ON (p.categoryname = '"+ categoryname +"') GROUP BY c.productname;" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+}
+
 
 addCategory = function(name, description, owner, done){
   var query = "INSERT INTO Categories " +
@@ -256,6 +274,7 @@ deleteCategory = function(cid, done){
       console.log(error);
       done(false);
   });
+
 }
 
 module.exports = {
@@ -269,5 +288,7 @@ module.exports = {
 	selectProductsWithSearch: selectProductsWithSearch,
 	addCategory: addCategory,
 	updateCategory: updateCategory,
-	deleteCategory: deleteCategory
+	deleteCategory: deleteCategory,
+  getCategoriesWithCount: getCategoriesWithCount
+
 }
