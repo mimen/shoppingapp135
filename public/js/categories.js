@@ -2,6 +2,7 @@ var app = angular.module("Categories", []);
 
 $('#updated_message').hide();
 $('#error_message').hide();
+$('#error_delete').hide();
 
 app.factory("httpLoader", ["$http", function ($http) {
     function load(href, done) {
@@ -21,7 +22,7 @@ app.factory("httpLoader", ["$http", function ($http) {
     };
 }]);
 
-// Library directive - html Element
+// Categories directive - html Element
 app.directive("categories", [function (){
     return {
         restrict: 'E',
@@ -31,7 +32,7 @@ app.directive("categories", [function (){
 
             ctlr.username = loggedinuser;
 
-            // Populate the list of songs
+            // Populate the list of categories
             ctlr.loadCategories = function(){
                 httpLoader.load('http://localhost:3000/api/categories', function (err, result) {
                     if (err) {
@@ -61,11 +62,13 @@ app.directive("categories", [function (){
                         	$('#error_message').show();
                         	$('#create_error').hide();
                         	$('#updated_message').hide();
+							$('#error_delete').hide();
                         }
-                        else{
+                        else {
                         	$('#updated_message').show();
                         	$('#error_message').hide();
                         	$('#create_error').hide();
+							$('#error_delete').hide();
                         }
                         ctlr.loadCategories();
                     }, function(error){
@@ -81,6 +84,18 @@ app.directive("categories", [function (){
                     var url = 'http://localhost:3000/api/categories/' + cid;
                     $http.delete(url).then(function(response){
                         console.log(response);
+                        if (response.data.error){
+                        	$('#error_delete').show();
+                        	$('#create_error').hide();
+                        	$('#updated_message').hide();
+							$('#error_message').hide();
+                        }
+                        else {
+                        	$('#updated_message').show();
+                        	$('#error_message').hide();
+                        	$('#create_error').hide();
+							$('#error_delete').hide();
+                        }
                         ctlr.loadCategories();
                     }, function(error){
                         console.log(error);
