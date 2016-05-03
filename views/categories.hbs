@@ -12,7 +12,7 @@
 	</div>
 </div>
 
-<form id = "form_category" class="form-horizontal">
+<form id = "category_template" class="form-horizontal">
 	<br>
 	<div class = "form-inline form-group">
 	  	<label class="col-sm-4 control-label">Name</label>
@@ -29,10 +29,26 @@
 	</div>
 </form>
 
+
+<form id = "form_category" class="form-horizontal">
+	<br>
+	<div class = "form-inline form-group">
+	  	<label class="col-sm-4 control-label">Name</label>
+	  	<input id="name" class="form-control col-sm-offset-0" type="text" name="name">
+	</div>
+	<div class = "form-inline form-group">
+	  	<label class="col-sm-4 control-label">Description</label>
+	  	<textarea rows = "4" cols = "24" id="description" class="form-control col-sm-offset-0" name="description"></textarea>
+	</div>
+
 <br>
 <div class = "form-inline form-group">
 	<button type="submit" class="btn btn-success btn-lg col-sm-offset-0">Insert</button>
 </div>
+</form>
+
+
+
 
 {{else}}
 	<h2>This page is available to owners only.</h2>

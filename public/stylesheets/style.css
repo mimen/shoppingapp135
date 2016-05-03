@@ -74,9 +74,15 @@ a {
 /* CATEGORY PAGE */
 
 #form_category {
-	border-style: solid;
-	border-width: thin;
-	width: 400px;
+    border-style: solid;
+    border-width: thin;
+    width: 400px;
+}
+
+#category_template {
+    border-style: solid;
+    border-width: thin;
+    width: 400px;
 }
 
 
