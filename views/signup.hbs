@@ -1,7 +1,7 @@
 
 <h1>Sign Up</h1>
 <br>
-<form action="signup/submit" method="get" target="_blank" class="form-horizontal">
+<form action="/signup/submit" method="get" target="_blank" class="form-horizontal">
 	<div class="form-inline form-group">
 		<label class="col-sm-2 control-label">What is your name?</label>
 		<input id="signup_name" class="form-control col-sm-offset-0" type="text" name="username">
@@ -11,77 +11,79 @@
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Choose your role.</label>
 		<div class="dropdown">
-			<button id="button1" class="btn btn-primary">Role</button>
-			<div class="dropdown-content">
-				<a class = "role" href="#">Customer</a>
-				<a class = "role" href="#">Owner</a>
-			</div>
+			<select name="type" id="button1" class="btn btn-primary">
+				<div class="dropdown-content">
+					<option value="customer">Customer</option>
+					<option value="owner">Owner</option>
+				</div>
+			</select>
 		</div>
 	</div>
 	<br><br>
 
 	<div class="form-inline form-group">
 		<label class="col-sm-2 control-label">What is your age?</label>
-		<input id="signup_age" class="form-control col-sm-offset-0" type="text" name="age">
+		<input id="signup_age" class="form-control col-sm-offset-0" type="number" name="age">
 	</div>
 	<br><br>
 
 	<div class="form-group">
 		<label class="col-sm-2 control-label">Where do you live?</label>
 		<div class="dropdown">
-			<button id="button2" class="btn btn-primary">State</button>
-			<div class="dropdown-content">
-				<a class = "state" href="#">AL</a>
-				<a class = "state" href="#">AK</a>
-				<a class = "state" href="#">AR</a>
-				<a class = "state" href="#">AZ</a>
-				<a class = "state" href="#">CA</a>
-				<a class = "state" href="#">CO</a>
-				<a class = "state" href="#">CT</a>
-				<a class = "state" href="#">DE</a>
-				<a class = "state" href="#">FL</a>
-				<a class = "state" href="#">GA</a>
-				<a class = "state" href="#">HI</a>
-				<a class = "state" href="#">IA</a>
-				<a class = "state" href="#">ID</a>
-				<a class = "state" href="#">IL</a>
-				<a class = "state" href="#">IN</a>
-				<a class = "state" href="#">KS</a>
-				<a class = "state" href="#">KY</a>
-				<a class = "state" href="#">LA</a>
-				<a class = "state" href="#">MA</a>
-				<a class = "state" href="#">MD</a>
-				<a class = "state" href="#">ME</a>
-				<a class = "state" href="#">MI</a>
-				<a class = "state" href="#">MN</a>
-				<a class = "state" href="#">MO</a>
-				<a class = "state" href="#">MS</a>
-				<a class = "state" href="#">MT</a>
-				<a class = "state" href="#">NC</a>
-				<a class = "state" href="#">ND</a>
-				<a class = "state" href="#">NE</a>
-				<a class = "state" href="#">NH</a>
-				<a class = "state" href="#">NJ</a>
-				<a class = "state" href="#">NM</a>
-				<a class = "state" href="#">NV</a>
-				<a class = "state" href="#">NY</a>
-				<a class = "state" href="#">OH</a>
-				<a class = "state" href="#">OK</a>
-				<a class = "state" href="#">OR</a>
-				<a class = "state" href="#">PA</a>
-				<a class = "state" href="#">RI</a>
-				<a class = "state" href="#">SC</a>
-				<a class = "state" href="#">SD</a>
-				<a class = "state" href="#">TN</a>
-				<a class = "state" href="#">TX</a>
-				<a class = "state" href="#">UT</a>
-				<a class = "state" href="#">VT</a>
-				<a class = "state" href="#">VA</a>
-				<a class = "state" href="#">WA</a>
-				<a class = "state" href="#">WI</a>
-				<a class = "state" href="#">WV</a>
-				<a class = "state" href="#">WY</a>
-			</div>
+			<select name = "state" id="button2" class="btn btn-primary">
+				<div class="dropdown-content">
+					<option value = "AL" href="#">AL</a>
+					<option value = "AK" href="#">AK</a>
+					<option value = "AR" href="#">AR</a>
+					<option value = "AZ" href="#">AZ</a>
+					<option value = "CA" href="#">CA</a>
+					<option value = "CO" href="#">CO</a>
+					<option value = "CT" href="#">CT</a>
+					<option value = "DE" href="#">DE</a>
+					<option value = "FL" href="#">FL</a>
+					<option value = "GA" href="#">GA</a>
+					<option value = "HI" href="#">HI</a>
+					<option value = "IA" href="#">IA</a>
+					<option value = "ID" href="#">ID</a>
+					<option value = "IL" href="#">IL</a>
+					<option value = "IN" href="#">IN</a>
+					<option value = "KS" href="#">KS</a>
+					<option value = "KY" href="#">KY</a>
+					<option value = "LA" href="#">LA</a>
+					<option value = "MA" href="#">MA</a>
+					<option value = "MD" href="#">MD</a>
+					<option value = "ME" href="#">ME</a>
+					<option value = "MI" href="#">MI</a>
+					<option value = "MN" href="#">MN</a>
+					<option value = "MO" href="#">MO</a>
+					<option value = "MS" href="#">MS</a>
+					<option value = "MT" href="#">MT</a>
+					<option value = "NC" href="#">NC</a>
+					<option value = "ND" href="#">ND</a>
+					<option value = "NE" href="#">NE</a>
+					<option value = "NH" href="#">NH</a>
+					<option value = "NJ" href="#">NJ</a>
+					<option value = "NM" href="#">NM</a>
+					<option value = "NV" href="#">NV</a>
+					<option value = "NY" href="#">NY</a>
+					<option value = "OH" href="#">OH</a>
+					<option value = "OK" href="#">OK</a>
+					<option value = "OR" href="#">OR</a>
+					<option value = "PA" href="#">PA</a>
+					<option value = "RI" href="#">RI</a>
+					<option value = "SC" href="#">SC</a>
+					<option value = "SD" href="#">SD</a>
+					<option value = "TN" href="#">TN</a>
+					<option value = "TX" href="#">TX</a>
+					<option value = "UT" href="#">UT</a>
+					<option value = "VT" href="#">VT</a>
+					<option value = "VA" href="#">VA</a>
+					<option value = "WA" href="#">WA</a>
+					<option value = "WI" href="#">WI</a>
+					<option value = "WV" href="#">WV</a>
+					<option value = "WY" href="#">WY</a>
+				</div>
+			</select>
 		</div>
 	</div>
 	<br><br><br>
