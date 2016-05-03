@@ -70,7 +70,7 @@ router.get('/categories', verifyLoggedIn, function(req, res, next) {
 router.get('/categories/submit/', verifyLoggedIn, function(req, res, next){
   var username = req.session.user.username;
   var isOwner = req.session.user.type.trim() == "owner";
-  db.addCategory(req.query.categoryname, req.query.description, req.session.user.username, function(success){
+  db.addCategory(req.query.name, req.query.description, req.session.user.username, function(success){
     if (!success){
       res.render('categories', {error:true, isOwner:isOwner, username:username});
     }
