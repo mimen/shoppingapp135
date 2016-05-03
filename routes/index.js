@@ -47,7 +47,7 @@ router.get('/login/submit/', function(req, res, next){
 });
 
 /* GET home page. */
-router.get('/home', function(req, res, next) {
+router.get('/home', verifyLoggedIn, function(req, res, next) {
   console.log(req.session.user);
   var isOwner = req.session.user.type == "owner";
   res.render('home', {isOwner:isOwner});
@@ -92,6 +92,15 @@ router.get('/buyshoppingcart', function(req, res, next) {
 /* GET confirmation page. */
 router.get('/confirmation', function(req, res, next) {
   res.render('confirmation');
+});
+
+router.get('/logout/', function(req, res, next){
+  req.session.destroy(function(err){
+    console.log(err);
+  })
+  // Redirect to the home page.
+  res.redirect('/');
+
 });
 
 module.exports = router;
