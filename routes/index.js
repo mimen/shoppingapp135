@@ -15,21 +15,28 @@ router.get('/', function(req, res, next) {
 });
 
 /* GET signup page. */
-router.get('/signup', function(req, res, next) {
+router.get('/signup', verifyLoggedOut, function(req, res, next) {
   res.render('signup');
 });
 
-router.get('/signup/submit/', function(req, res, next){
+router.get('/signup/submit/', verifyLoggedOut, function(req, res, next){
   db.addUser(req.query.username, req.query.type, req.query.age, req.query.state, function(success){
-    if (success)
-      res.render('success');
+    if (success){
+      db.getUser(req.query.username, function(user, success){
+          if (success){
+            console.log(user);
+            req.session.user = user;
+            res.render('success', {username:username});
+          }
+      });
+    }
     else
       res.render('failure');
   });
 });
 
 /* GET login page. */
-router.get('/login', function(req, res, next) {
+router.get('/login', verifyLoggedOut, function(req, res, next) {
   res.render('login', {error:false});
 });
 
@@ -48,12 +55,13 @@ router.get('/login/submit/', function(req, res, next){
 /* GET home page. */
 router.get('/home', verifyLoggedIn, function(req, res, next) {
   console.log(req.session.user);
+  var username = req.session.user.username;
   var isOwner = req.session.user.type == "owner";
-  res.render('home', {isOwner:isOwner});
+  res.render('home', {isOwner:isOwner, username:username});
 });
 
 /* GET categories page. */
-router.get('/categories', function(req, res, next) {
+router.get('/categories', verifyLoggedIn, function(req, res, next) {
     req.db.any("select * from users")
     .then(function (data) {
         console.log(data);
@@ -62,34 +70,39 @@ router.get('/categories', function(req, res, next) {
        console.log(error);
     });
 
-  res.render('categories');
-
+    var username = req.session.user.username;
+    res.render('categories', {username:username});
 });
 
 /* GET products page. */
-router.get('/products', function(req, res, next) {
+router.get('/products', verifyLoggedIn, function(req, res, next) {
   console.log(req.session.user);
+  var username = req.session.user.username;
   var isOwner = req.session.user.type == "owner";
-  res.render('products', {isOwner:isOwner});
+  res.render('products', {isOwner:isOwner, username:username});
 });
 
 /* GET products_browsing page. */
-router.get('/productsbrowsing', function(req, res, next) {
-  res.render('productsbrowsing');
+router.get('/productsbrowsing', verifyLoggedIn, function(req, res, next) {
+  var username = req.session.user.username;
+  res.render('productsbrowsing', {username:username});
 });
 
 /* GET product_order page. */
-router.get('/productorder', function(req, res, next) {
-  res.render('productorder');
+router.get('/productorder', verifyLoggedIn, function(req, res, next) {
+  var username = req.session.user.username;
+  res.render('productorder', {username:username});
 });
 
 /* GET buy_shopping_cart page. */
-router.get('/buyshoppingcart', function(req, res, next) {
-  res.render('buyshoppingcart');
+router.get('/buyshoppingcart', verifyLoggedIn, function(req, res, next) {
+  var username = req.session.user.username;
+  res.render('buyshoppingcart', {username:username});
 });
 
 /* GET confirmation page. */
-router.get('/confirmation', function(req, res, next) {
+router.get('/confirmation', verifyLoggedIn, function(req, res, next) {
+  var username = req.session.user.username;
   res.render('confirmation');
 });
 
