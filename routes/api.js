@@ -8,7 +8,7 @@ router.get('/', function(req, res, next) {
   res.json({"hello":"world"});
 });
 
-/* GET logged in user's collection. */
+/* GET categories of logged in user. */
 router.get('/categories/', function(req, res, next) {
 	// Retrieve the user data from the session.
 	var user = req.session.user;
@@ -23,12 +23,31 @@ router.get('/categories/', function(req, res, next) {
 	});
 })
 
-/* GET logged in user's collection. */
-router.delete('/categories/:cname', function(req, res, next) {
+/* UPDATE category name/description using category ID. */
+router.put('/categories/', function(req, res, next) {
 	// Retrieve the user data from the session.
-	var name = req.params.cname;
+	console.log(req.body);
+	var cid = req.body.cid;
+	var name = req.body.name;
+	var description = req.body.description;
 	// Get the collection from the database and render the json.
-	db.deleteCategory(name, function(success){
+	db.updateCategory(cid, name, description, function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else{
+			res.json({"error":"error"});
+		}
+	});
+})
+
+
+/* DELETE category using category ID. */
+router.delete('/categories/:cid', function(req, res, next) {
+	// Retrieve the user data from the session.
+	var cid = req.params.cid;
+	// Get the collection from the database and render the json.
+	db.deleteCategory(cid, function(success){
 		if (success){
 			res.json({"success":"success"});
 		}
