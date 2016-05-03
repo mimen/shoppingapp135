@@ -263,5 +263,12 @@ module.exports = {
 	instance: db,
 	initialize: initializeTables,
 	addUser: addUser,
-  getUser: getUser
+  getUser: getUser,
+  addProduct: addProduct,
+  getCategoriesFromUser: getCategoriesFromUser,
+  getProductsInCategory, getProductsInCategory,
+  selectProductsWithSearch, selectProductsWithSearch,
+  addCategory: addCategory,
+  updateCategory:updateCategory,
+  deleteCategory: deleteCategory
 }
