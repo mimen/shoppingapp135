@@ -10,9 +10,7 @@ var db = require('../client/database.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  //db.initialize();
-  //db.addCategory("A", "test", "asdf" );
-  //db.addProduct("box", "A", 5,5);
+  db.initialize();
   res.redirect('/home/');
 });
 
