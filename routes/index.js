@@ -62,16 +62,9 @@ router.get('/home', verifyLoggedIn, function(req, res, next) {
 
 /* GET categories page. */
 router.get('/categories', verifyLoggedIn, function(req, res, next) {
-    req.db.any("select * from users")
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
-
     var username = req.session.user.username;
-    res.render('categories', {username:username});
+    var isOwner = req.session.user.type.trim() == "owner";
+    res.render('categories', {isOwner:isOwner, username:username});
 });
 
 /* GET products page. */
