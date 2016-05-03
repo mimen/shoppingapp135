@@ -18,6 +18,7 @@ var db = pgp(config.postgres_url);
 */
 
 initializeTables = function(){
+
 	var query1 = "CREATE TABLE Users(" + 
 		"username char(50) PRIMARY KEY," +
 		"type char(8) NOT NULL," +
@@ -25,73 +26,72 @@ initializeTables = function(){
 		"state char(2) NOT NULL" +
 		");";
 
-  var query2 = "CREATE TABLE Product(" + 
-    "productname char(50) PRIMARY KEY," +
-    "categoryname char(50) REFERENCES Category(categoryname)," +
-    "SKU int NOT NULL UNIQUE," +
-    "price int NOT NULL" +
-    ");";
+	var query2 = "CREATE TABLE Products(" + 
+		"productname char(50) PRIMARY KEY," +
+		"categoryname char(50) REFERENCES Categories(categoryname)," +
+		"SKU int NOT NULL UNIQUE," +
+		"price int NOT NULL" +
+		");";
 
-  var query3 = "CREATE TABLE Category(" + 
-    "categoryname char(50) PRIMARY KEY," +
-    "description  char(50) NOT NULL," +
-    "username  char(50) REFERENCES Users(username)" +
-    ");";
+	var query3 = "CREATE TABLE Categories(" + 
+		"categoryname char(50) PRIMARY KEY," +
+		"description char(50) NOT NULL," +
+		"username char(50) REFERENCES Users(username)" +
+		");";
 
-  var query4 = "CREATE TABLE Order(" + 
-    "orderID int PRIMARY KEY," +
-    "date char(50) NOT NULL," +
-    "username char[50] REFERENCES Users(username)," +
-    "orderNumber int NOT NULL" +
-    ");";
+	var query4 = "CREATE TABLE Orders(" +
+		"ordername char(50) PRIMARY KEY," +
+		"date char(50) NOT NULL," +
+		"username char(50) REFERENCES Users(username)," +
+		");";
 
-  var query5 = "CREATE TABLE OrderItem(" + 
-    "itemID char(50) PRIMARY KEY," +
-    "productname char(50) REFERENCES Product(productname)," +
-    "orderID int REFERENCES ORDER(orderID)," +
-    "quantity int NOT NULL," +
-    "price int NOT NULL" +
-    ");";
+	var query5 = "CREATE TABLE OrderItems(" + 
+		"itemID char(50) PRIMARY KEY," +
+		"productname char(50) REFERENCES Products(productname)," +
+		"ordername char(50) REFERENCES Orders(ordername)," +
+		"quantity int NOT NULL," +
+		"price int NOT NULL" +
+		");";
 
 	db.any(query1)
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
+	    .then(function (data) {
+	        console.log(data);
+	    })
+	    .catch(function (error) {
+	       console.log(error);
+	    });
 
-  db.any(query2)
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
+  	db.any(query2)
+	    .then(function (data) {
+	        console.log(data);
+	    })
+	    .catch(function (error) {
+	       console.log(error);
+	    });
 
-  db.any(query3)
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
+  	db.any(query3)
+	    .then(function (data) {
+	        console.log(data);
+	    })
+	    .catch(function (error) {
+	       console.log(error);
+	    });
 
-  db.any(query4)
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
-      
-  db.any(query5)
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
+  	db.any(query4)
+	    .then(function (data) {
+	        console.log(data);
+	    })
+	    .catch(function (error) {
+	       console.log(error);
+	    });
+  
+  	db.any(query5)
+	    .then(function (data) {
+	        console.log(data);
+	    })
+	    .catch(function (error) {
+	       console.log(error);
+	    });
 
 }
 
