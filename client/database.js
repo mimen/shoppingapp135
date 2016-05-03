@@ -271,12 +271,7 @@ deleteCategory = function(category_name, done){
       console.log(error);
       done(false);
   });
-<<<<<<< HEAD
 
-
-
-=======
->>>>>>> 458e83331377618dcff2058073d2037ea9681381
 }
 
 module.exports = {
