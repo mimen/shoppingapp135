@@ -13,7 +13,7 @@ router.get('/categories/', function(req, res, next) {
 	// Retrieve the user data from the session.
 	var user = req.session.user;
 	// Get the collection from the database and render the json.
-	db.getCategoriesFromUser(user.username, function(categories, success){
+	db.getCategories(function(categories, success){
 		if (success){
 			res.json(categories);
 		}
