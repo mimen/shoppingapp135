@@ -124,7 +124,10 @@ getUser = function(name, done){
   db.any(query)
     .then(function (data) {
       console.log(data);
-        done(data, true);
+      if (data.length > 0)
+        done(data[0], true);
+      else
+        done(null, false);
     })
     .catch(function (error) {
       console.log(error);

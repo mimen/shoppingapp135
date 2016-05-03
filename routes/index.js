@@ -40,7 +40,7 @@ router.get('/login/submit/', function(req, res, next){
       res.render('login', {error:true, username:req.query.username});
     else
     {
-      req.session.user = user[0];
+      req.session.user = user;
       res.redirect('/home');
     }
   });
