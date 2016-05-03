@@ -188,7 +188,7 @@ selectProductsWithSearch = function(search_string){
   });
 }
 
-getCategoriesFromUser = function(username){
+getCategoriesFromUser = function(username, done){
 
   var query = "SELECT * FROM Categories" +
     "WHERE username = '" + username +"';" ;
@@ -196,11 +196,11 @@ getCategoriesFromUser = function(username){
   db.any(query)
     .then(function (data) {
       console.log(data);
-        done(true);
+        done(data, true);
     })
     .catch(function (error) {
       console.log(error);
-      done(false);
+      done(null, false);
   });
 }
 
