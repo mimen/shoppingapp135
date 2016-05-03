@@ -27,7 +27,7 @@ initializeTables = function(){
 
   var query2 = "CREATE TABLE Product(" + 
     "productname char(50) PRIMARY KEY," +
-    "categoryname char(50) FOREIGN KEY REFERENCES Category(categoryname)," +
+    "categoryname char(50) REFERENCES Category(categoryname)," +
     "SKU int NOT NULL UNIQUE," +
     "price int NOT NULL" +
     ");";
@@ -35,20 +35,20 @@ initializeTables = function(){
   var query3 = "CREATE TABLE Category(" + 
     "categoryname char(50) PRIMARY KEY," +
     "description  char(50) NOT NULL," +
-    "username  char(50) FOREIGN KEY REFERENCES User(username)" +
+    "username  char(50) REFERENCES Users(username)" +
     ");";
 
   var query4 = "CREATE TABLE Order(" + 
     "orderID int PRIMARY KEY," +
     "date char(50) NOT NULL," +
-    "username char[50] FOREIGN KEY REFERENCES User(username)," +
+    "username char[50] REFERENCES Users(username)," +
     "orderNumber int NOT NULL" +
     ");";
 
   var query5 = "CREATE TABLE OrderItem(" + 
     "itemID char(50) PRIMARY KEY," +
-    "productname char(50) FOREIGN KEY REFERENCES Product(productname)," +
-    "orderID int FOREIGN KEY REFERENCES ORDER(orderID)," +
+    "productname char(50) REFERENCES Product(productname)," +
+    "orderID int REFERENCES ORDER(orderID)," +
     "quantity int NOT NULL," +
     "price int NOT NULL" +
     ");";
