@@ -136,6 +136,58 @@ getUser = function(name, done){
 
 }
 
+addProduct = function(productname, categoryname, SKU, price){
+  var query = "INSERT INTO Product" +
+        "(productname, categoryname, SKU, price) " + 
+         "VALUES ('"
+          + productname + "', '"
+          + categoryname + "', '" 
+          + SKU + "', '" 
+          + price + "');";
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+
+}
+
+getProductsInCategory = function(categoryname){
+
+  var query = "SELECT * FROM Category" +
+    "WHERE categoryname = '" + categoryname +"';" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+}
+
+selectProductsWithSearch = function(search_string){
+
+  var query = "SELECT * FROM Product" +
+    "WHERE categoryname LIKE '%" + search_string +"%';" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+}
+
 addCategory = function(name, description, owner){
   var query = "INSERT INTO Category" +
         "(categoryname, description, username) " + 
@@ -185,6 +237,8 @@ deleteCategory = function(category_name){
       console.log(error);
       done(false);
   });
+
+
 
 }
 
