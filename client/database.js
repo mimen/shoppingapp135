@@ -136,8 +136,76 @@ getUser = function(name, done){
 
 }
 
-addCategory = function(name, description, owner){
-  var query = "INSERT INTO Category" +
+addProduct = function(productname, categoryname, SKU, price, done){
+  var query = "INSERT INTO Products" +
+        "(productname, categoryname, SKU, price) " + 
+         "VALUES ('"
+          + productname + "', '"
+          + categoryname + "', '" 
+          + SKU + "', '" 
+          + price + "');";
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+
+}
+
+getProductsInCategory = function(categoryname, done){
+
+  var query = "SELECT * FROM Categories" +
+    "WHERE categoryname = '" + categoryname +"';" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+}
+
+selectProductsWithSearch = function(search_string, done){
+
+  var query = "SELECT * FROM Products" +
+    "WHERE productname LIKE '%" + search_string +"%';" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+}
+
+getCategoriesFromUser = function(username, done){
+
+  var query = "SELECT * FROM Categories" +
+    "WHERE username = '" + username +"';" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(data, true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(null, false);
+  });
+}
+
+addCategory = function(name, description, owner, done){
+  var query = "INSERT INTO Categories" +
         "(categoryname, description, username) " + 
          "VALUES ('"
           + name + "', '"
@@ -155,8 +223,9 @@ addCategory = function(name, description, owner){
 
 }
 
-updateCategory = function(cur_name, new_name, new_description, owner){
-  var query = "UPDATE Category " +
+//TODO: only update respective descriptions needed
+updateCategory = function(cur_name, new_name, new_description, owner, done){
+  var query = "UPDATE Categories " +
         "SET categoryname = '"+ new_name + "', description = '" + new_description + "' "+
         "WHERE categoryname = '" + cur_name +"';";
 
@@ -169,11 +238,10 @@ updateCategory = function(cur_name, new_name, new_description, owner){
       console.log(error);
       done(false);
   });
-
 }
 
-deleteCategory = function(category_name){
-  var query = "DELETE FROM Category " +
+deleteCategory = function(category_name, done){
+  var query = "DELETE FROM Categories " +
         "WHERE categoryname = '" + category_name + "';";
 
   db.any(query)
@@ -186,11 +254,20 @@ deleteCategory = function(category_name){
       done(false);
   });
 
+
+
 }
 
 module.exports = {
 	instance: db,
 	initialize: initializeTables,
 	addUser: addUser,
-  getUser: getUser
+  getUser: getUser,
+  addProduct: addProduct,
+  getCategoriesFromUser: getCategoriesFromUser,
+  getProductsInCategory, getProductsInCategory,
+  selectProductsWithSearch, selectProductsWithSearch,
+  addCategory: addCategory,
+  updateCategory:updateCategory,
+  deleteCategory: deleteCategory
 }
