@@ -137,7 +137,7 @@ getUser = function(name, done){
 }
 
 addProduct = function(productname, categoryname, SKU, price){
-  var query = "INSERT INTO Product" +
+  var query = "INSERT INTO Products" +
         "(productname, categoryname, SKU, price) " + 
          "VALUES ('"
           + productname + "', '"
@@ -158,7 +158,7 @@ addProduct = function(productname, categoryname, SKU, price){
 
 getProductsInCategory = function(categoryname){
 
-  var query = "SELECT * FROM Category" +
+  var query = "SELECT * FROM Categories" +
     "WHERE categoryname = '" + categoryname +"';" ;
 
   db.any(query)
@@ -174,8 +174,8 @@ getProductsInCategory = function(categoryname){
 
 selectProductsWithSearch = function(search_string){
 
-  var query = "SELECT * FROM Product" +
-    "WHERE categoryname LIKE '%" + search_string +"%';" ;
+  var query = "SELECT * FROM Products" +
+    "WHERE productname LIKE '%" + search_string +"%';" ;
 
   db.any(query)
     .then(function (data) {
@@ -189,7 +189,7 @@ selectProductsWithSearch = function(search_string){
 }
 
 addCategory = function(name, description, owner){
-  var query = "INSERT INTO Category" +
+  var query = "INSERT INTO Categories" +
         "(categoryname, description, username) " + 
          "VALUES ('"
           + name + "', '"
@@ -207,8 +207,9 @@ addCategory = function(name, description, owner){
 
 }
 
+//TODO: only update respective descriptions needed
 updateCategory = function(cur_name, new_name, new_description, owner){
-  var query = "UPDATE Category " +
+  var query = "UPDATE Categories " +
         "SET categoryname = '"+ new_name + "', description = '" + new_description + "' "+
         "WHERE categoryname = '" + cur_name +"';";
 
@@ -225,7 +226,7 @@ updateCategory = function(cur_name, new_name, new_description, owner){
 }
 
 deleteCategory = function(category_name){
-  var query = "DELETE FROM Category " +
+  var query = "DELETE FROM Categories " +
         "WHERE categoryname = '" + category_name + "';";
 
   db.any(query)
