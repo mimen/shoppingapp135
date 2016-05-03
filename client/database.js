@@ -20,33 +20,38 @@ var db = pgp(config.postgres_url);
 initializeTables = function(){
 
 	var query1 = "CREATE TABLE Users(" + 
-		"username char(50) PRIMARY KEY," +
+		"uid serial PRIMARY KEY," +
+		"username char(50) NOT NULL UNIQUE," +
 		"type char(8) NOT NULL," +
 		"age int NOT NULL," +
 		"state char(2) NOT NULL" +
 		");";
 
 	var query2 = "CREATE TABLE Categories(" + 
-    "categoryname char(50) PRIMARY KEY," +
-    "description char(50) NOT NULL," +
-    "username char(50) REFERENCES Users(username)" +
-    ");";
+		"cid serial PRIMARY KEY," +
+	    "categoryname char(50) NOT NULL UNIQUE," +
+	    "description char(50) NOT NULL," +
+	    "username char(50) REFERENCES Users(username)" +
+	    ");";
 
 	var query3 = "CREATE TABLE Products(" + 
-    "productname char(50) PRIMARY KEY," +
-    "categoryname char(50) REFERENCES Categories(categoryname)," +
-    "SKU int NOT NULL UNIQUE," +
-    "price int NOT NULL" +
-    ");";
+		"pid serial PRIMARY KEY," +
+	    "productname char(50) NOT NULL UNIQUE," +
+	    "categoryname char(50) REFERENCES Categories(categoryname)," +
+	    "SKU int NOT NULL UNIQUE," +
+	    "price int NOT NULL" +
+	    ");";
 
 	var query4 = "CREATE TABLE Orders(" +
-		"ordername char(50) PRIMARY KEY," +
+		"oid serial PRIMARY KEY," +
+		"ordername char(50) NOT NULL UNIQUE," +
 		"date char(50) NOT NULL," +
-		"username char(50) REFERENCES Users(username)," +
+		"username char(50) REFERENCES Users(username)" +
 		");";
 
 	var query5 = "CREATE TABLE OrderItems(" + 
-		"itemID char(50) PRIMARY KEY," +
+		"iid serial PRIMARY KEY," +
+		"itemname char(50) NOT NULL UNIQUE," +
 		"productname char(50) REFERENCES Products(productname)," +
 		"ordername char(50) REFERENCES Orders(ordername)," +
 		"quantity int NOT NULL," +
@@ -94,8 +99,6 @@ initializeTables = function(){
 	    });
 
 }
-
-
 
 
 addUser = function(name, type, age, state, done){
@@ -191,11 +194,11 @@ selectProductsWithSearch = function(search_string, done){
 getCategoriesFromUser = function(username, done){
 
   var query = "SELECT * FROM Categories " +
-    "WHERE username = '" + username +"';" ;
+  		"ORDER BY cid ASC;" ;
 
   db.any(query)
     .then(function (data) {
-      console.log(data);
+      //console.log(data);
         done(data, true);
     })
     .catch(function (error) {
@@ -224,10 +227,10 @@ addCategory = function(name, description, owner, done){
 }
 
 //TODO: only update respective descriptions needed
-updateCategory = function(cur_name, new_name, new_description, owner, done){
+updateCategory = function(cid, new_name, new_description, done){
   var query = "UPDATE Categories " +
         "SET categoryname = '"+ new_name + "', description = '" + new_description + "' "+
-        "WHERE categoryname = '" + cur_name +"';";
+        "WHERE cid = '" + cid +"';";
 
   db.any(query)
     .then(function (data) {
@@ -240,9 +243,9 @@ updateCategory = function(cur_name, new_name, new_description, owner, done){
   });
 }
 
-deleteCategory = function(category_name, done){
+deleteCategory = function(cid, done){
   var query = "DELETE FROM Categories " +
-        "WHERE categoryname = '" + category_name + "';";
+        "WHERE cid = '" + cid + "';";
 
   db.any(query)
     .then(function (data) {
