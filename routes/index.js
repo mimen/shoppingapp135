@@ -11,7 +11,6 @@ var db = require('../client/database.js');
 /* GET home page. */
 router.get('/', function(req, res, next) {
   db.initialize();
-  db.addUser("asdf", "customer", 21, "CA");
   res.redirect('/home/');
 });
 
