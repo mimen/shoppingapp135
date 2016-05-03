@@ -118,7 +118,7 @@ addUser = function(name, type, age, state, done){
 }
 
 getUser = function(name, done){
-  var query = "SELECT * FROM Users" +
+  var query = "SELECT * FROM Users " +
               "WHERE username = '"+ name +"';";
 
   db.any(query)
@@ -188,5 +188,6 @@ deleteCategory = function(category_name){
 module.exports = {
 	instance: db,
 	initialize: initializeTables,
-	addUser: addUser
+	addUser: addUser,
+  getUser: getUser
 }
