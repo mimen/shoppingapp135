@@ -158,7 +158,7 @@ addProduct = function(productname, categoryname, SKU, price, done){
 
 getProductsInCategory = function(categoryname, done){
 
-  var query = "SELECT * FROM Categories" +
+  var query = "SELECT * FROM Categories " +
     "WHERE categoryname = '" + categoryname +"';" ;
 
   db.any(query)
@@ -174,7 +174,7 @@ getProductsInCategory = function(categoryname, done){
 
 selectProductsWithSearch = function(search_string, done){
 
-  var query = "SELECT * FROM Products" +
+  var query = "SELECT * FROM Products " +
     "WHERE productname LIKE '%" + search_string +"%';" ;
 
   db.any(query)
@@ -190,7 +190,7 @@ selectProductsWithSearch = function(search_string, done){
 
 getCategoriesFromUser = function(username, done){
 
-  var query = "SELECT * FROM Categories" +
+  var query = "SELECT * FROM Categories " +
     "WHERE username = '" + username +"';" ;
 
   db.any(query)
@@ -205,7 +205,7 @@ getCategoriesFromUser = function(username, done){
 }
 
 addCategory = function(name, description, owner, done){
-  var query = "INSERT INTO Categories" +
+  var query = "INSERT INTO Categories " +
         "(categoryname, description, username) " + 
          "VALUES ('"
           + name + "', '"
@@ -253,6 +253,8 @@ deleteCategory = function(category_name, done){
       console.log(error);
       done(false);
   });
+
+
 
 
 

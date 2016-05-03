@@ -31,6 +31,7 @@ app.use(session({
 // Make our database accessible to our router
 app.use(function(req,res,next){
     req.db = db;
+    console.log(req.session);
     next();
 });
 
