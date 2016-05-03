@@ -159,19 +159,35 @@ addProduct = function(productname, categoryname, SKU, price, done){
 
 }
 
+
+getProducts = function(done){
+
+  var query = "SELECT * FROM Products;" ;
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(data, true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(null, false);
+  });
+}
+
 getProductsInCategory = function(categoryname, done){
 
-  var query = "SELECT * FROM Categories " +
+  var query = "SELECT * FROM Products " +
     "WHERE categoryname = '" + categoryname +"';" ;
 
   db.any(query)
     .then(function (data) {
       console.log(data);
-        done(true);
+        done(data, true);
     })
     .catch(function (error) {
       console.log(error);
-      done(false);
+      done(null, false);
   });
 }
 
@@ -285,6 +301,7 @@ module.exports = {
 	getUser: getUser,
 	addProduct: addProduct,
 	getCategories: getCategories,
+  getProducts: getProducts,
 	getProductsInCategory: getProductsInCategory,
 	selectProductsWithSearch: selectProductsWithSearch,
 	addCategory: addCategory,
