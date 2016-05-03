@@ -160,9 +160,14 @@ addProduct = function(productname, categoryname, SKU, price, done){
 }
 
 
-getProducts = function(done){
+getProducts = function(search_string, done){
 
-  var query = "SELECT * FROM Products;" ;
+  var query = "SELECT * FROM Products" ;
+
+    if (search_string == "")
+      query += ";";
+    else
+      query += "WHERE productname LIKE '%" + search_string +"%';" ;
 
   db.any(query)
     .then(function (data) {
@@ -175,11 +180,15 @@ getProducts = function(done){
   });
 }
 
-getProductsInCategory = function(categoryname, done){
-
+getProductsInCategory = function(categoryname, search_string, done){
   var query = "SELECT * FROM Products " +
     "WHERE categoryname = '" + categoryname +"';" ;
 
+    if (search_string == "")
+      query += ";";
+    else
+      query += "AND productname LIKE '%" + search_string +"%';" ;
+
   db.any(query)
     .then(function (data) {
       console.log(data);
@@ -193,7 +202,7 @@ getProductsInCategory = function(categoryname, done){
 
 
 
-selectProductsWithSearch = function(search_string, done){
+selectProductsWithSearch = function(done){
 
   var query = "SELECT * FROM Products " +
     "WHERE productname LIKE '%" + search_string +"%';" ;

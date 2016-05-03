@@ -32,6 +32,7 @@ app.directive("products", [function (){
             var ctlr = this;
 
             ctlr.username = loggedinuser;
+            ctlr.search = "";
 
             // Populate the list of categories
             ctlr.loadCategories = function(){
@@ -47,11 +48,32 @@ app.directive("products", [function (){
             }
 
             ctlr.showAll = function(){
-            	
+            	var url = 'http://localhost:3000/api/products?search=' + ctlr.search;
+                httpLoader.load(url, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("loaded");
+                        ctlr.products = result;
+                        console.log(result);
+                    }
+                });
             }
-            
+
             ctlr.showCategory = function(category){
-            	
+            	var name = category.categoryname;
+            	var url = 'http://localhost:3000/api/products/' + name + '?search=' + ctlr.search;
+                httpLoader.load(url, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("loaded");
+                        ctlr.products = result;
+                        console.log(result);
+                    }
+                });            	
             }
 
             ctlr.loadCategories();

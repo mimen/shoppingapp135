@@ -55,8 +55,9 @@ router.delete('/categories/:cid', function(req, res, next) {
 
 /* GET all products. */
 router.get('/products/', function(req, res, next) {
+	var search = req.query.search;
 	// Get the categories from the database and render the json.
-	db.getProducts(function(products, success){
+	db.getProducts(search, function(products, success){
 		if (success){
 			res.json(products);
 		}
@@ -69,9 +70,10 @@ router.get('/products/', function(req, res, next) {
 
 /* GET all products that belong to a category. */
 router.get('/products/:cname', function(req, res, next) {
-	var categoryname = req.query.cname;
+	var search = req.query.search;
+	var categoryname = req.params.cname;
 	// Get the categories from the database and render the json.
-	db.getProducts(categoryname, function(products, success){
+	db.getProductsInCategory(categoryname, search, function(products, success){
 		if (success){
 			res.json(products);
 		}
