@@ -36,6 +36,16 @@ router.get('/signup/submit/', verifyLoggedOut, function(req, res, next){
   });
 });
 
+router.get('/categories/submit/', verifyLoggedOut, function(req, res, next){
+  db.addCategory(req.query.categoryname, req.query.description, function(success){
+    if (success){
+      res.render('success', {username:req.query.username});
+    }
+    else
+      res.render('failure');
+  });
+});
+
 /* GET login page. */
 router.get('/login', verifyLoggedOut, function(req, res, next) {
   res.render('login', {error:false});
@@ -67,20 +77,6 @@ router.get('/categories', verifyLoggedIn, function(req, res, next) {
     res.render('categories', {isOwner:isOwner, username:username});
 });
 
-router.get('/categories/submit/', verifyLoggedOut, function(req, res, next){
-  db.addCategory(req.query.categoryname, req.query.description, function(success){
-    if (success){
-      var category = {
-        categoryname: req.query.categoryname,
-        description: req.query.description
-      }
-      req.session.user = user;
-      res.render('success', {username:req.query.username});
-    }
-    else
-      res.render('failure');
-  });
-});
 
 /* GET products page. */
 router.get('/products', verifyLoggedIn, function(req, res, next) {
