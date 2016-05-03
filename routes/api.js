@@ -83,4 +83,38 @@ router.get('/products/:cname', function(req, res, next) {
 	});
 })
 
+
+/* UPDATE product information using product ID. */
+router.put('/categories/', function(req, res, next) {
+	var pid = req.body.pid;
+	var pname = req.body.productname;
+	var sku = req.body.sku;
+	var price = req.body.price;
+	var cname = req.body.categoryname;
+	// Get the categories from the database and render the json.
+	db.updateProduct(pid, pname, price, sku, cname, function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else{
+			res.json({"error":"error"});
+		}
+	});
+})
+
+
+/* DELETE category using category ID. */
+router.delete('/categories/:pid', function(req, res, next) {
+	var pid = req.params.pid;
+	// Get the categories from the database and render the json.
+	db.deleteProduct(pid, function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else{
+			res.json({"error":"error"});
+		}
+	});
+})
+
 module.exports = router;
