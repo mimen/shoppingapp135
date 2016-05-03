@@ -1,18 +1,21 @@
 <h1>Log In</h1>
+{{#if error}}
+  <h3>The provided name {{username}} is not known.</h3>
+{{/if}}
 <br>
-<form class="form-horizontal">
+<form action="/login/submit" method="get" target="_blank" class="form-horizontal">
 	<div class="form-inline form-group">
   		<label class="col-sm-1 control-label">Name</label>
-  		<input id="login_name" class="form-control col-sm-offset-0" type="text" name="name">
+  		<input id="login_name" class="form-control col-sm-offset-0" type="text" name="username">
   	</div>
   	<br>
   	<div class="form-group">
-  		<button type="submit" class="col-sm-offset-1 btn btn-success btn-lg">Log In</button>
+  		<button type="submit" value="Submit" class="col-sm-offset-1 btn btn-success btn-lg">Log In</button>
   	</div>
   	<br>
   	<div class="form-group">
 		<label class="col-sm-offset-0 col-sm-offset-1 control-label">Don't have an account?</label>
-		<a role="button" class="col-sm-offset-0 btn btn-default" href = "../signup/">Sign Up Here</a> 
+		<a role="button"  class="col-sm-offset-0 btn btn-default" href = "../signup/">Sign Up Here</a> 
  	</div>
 </form>
 

@@ -31,7 +31,19 @@ router.get('/signup/submit/', function(req, res, next){
 
 /* GET login page. */
 router.get('/login', function(req, res, next) {
-  res.render('login');
+  res.render('login', {error:false});
+});
+
+router.get('/login/submit/', function(req, res, next){
+  db.getUser(req.query.username, function(user, success){
+    if (!success)
+      res.render('login', {error:true, username:req.query.username});
+    else
+    {
+      req.session.user = user;
+      res.redirect('/home');
+    }
+  });
 });
 
 /* GET home page. */
