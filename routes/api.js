@@ -85,7 +85,25 @@ router.get('/products/:cname', function(req, res, next) {
 
 
 /* UPDATE product information using product ID. */
-router.put('/categories/', function(req, res, next) {
+router.post('/products/', function(req, res, next) {
+	var pname = req.body.productname;
+	var sku = req.body.sku;
+	var price = req.body.price;
+	var cname = req.body.categoryname;
+	// Get the categories from the database and render the json.
+	db.updateProduct(pname, cname, sku, price, function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else{
+			res.json({"error":"error"});
+		}
+	});
+})
+
+
+/* UPDATE product information using product ID. */
+router.put('/products/', function(req, res, next) {
 	var pid = req.body.pid;
 	var pname = req.body.productname;
 	var sku = req.body.sku;
@@ -104,7 +122,7 @@ router.put('/categories/', function(req, res, next) {
 
 
 /* DELETE category using category ID. */
-router.delete('/categories/:pid', function(req, res, next) {
+router.delete('/products/:pid', function(req, res, next) {
 	var pid = req.params.pid;
 	// Get the categories from the database and render the json.
 	db.deleteProduct(pid, function(success){

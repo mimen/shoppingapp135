@@ -1,6 +1,6 @@
 $(".category").click(function(){
 	console.log($(this).text());
-	$("#category_button").text($(this).text());
+	$("#category_name").text($(this).text());
 })
 
 var app = angular.module("Products", []);
@@ -55,8 +55,8 @@ app.directive("products", [function (){
                     }
                     else {
                         console.log("loaded");
-                        ctlr.products = result;
                         console.log(result);
+                        ctlr.products = result;
                     }
                 });
             }
@@ -71,9 +71,92 @@ app.directive("products", [function (){
                     else {
                         console.log("loaded");
                         ctlr.products = result;
-                        console.log(result);
                     }
                 });            	
+            }
+
+            //TODO: can't update category name right now.
+             ctlr.updateProduct = function(product, index){
+            	var newname = $('#product_name' + index).val();
+            	var newsku = $('#sku' + index).val();
+            	var newcname = $('#category_name' + index).val();
+            	var newprice = $('#price' + index).val();
+            	var body = {
+            		pid: product.pid,
+            		productname: newname,
+            		sku: newsku,
+            		categoryname: newcname,
+            		price: newprice
+            	};
+            	console.log(body);
+            	var url = 'http://localhost:3000/api/products/';
+            	$http.put(url, body).then(function(response){
+                        console.log(response);
+                        if (response.data.error){
+                        	//$('#error_delete').show();
+                        	//$('#create_error').hide();
+                        }
+                        else {
+                        	//$('#updated_message').show();
+                        	//$('#error_message').hide();
+                        }
+                        ctlr.showAll();
+                    }, function(error){
+                        console.log(error);
+                    })
+            }
+
+             ctlr.createProduct = function(){
+            	var pname = $('#new_pname').val();
+            	var cname = $('#new_cname').val();
+            	var price = $('#new_price').val();
+            	var sku = $('#new_sku').val();
+            	var body = {
+            		productname: pname,
+            		sku: sku,
+            		categoryname: cname,
+            		price: price
+            	};
+            	var url = 'http://localhost:3000/api/products/';
+            	$http.post(url, body).then(function(response){
+                        console.log(response);
+                        if (response.data.error){
+                        	//$('#error_delete').show();
+                        	//$('#create_error').hide();
+                        }
+                        else {
+                        	//$('#updated_message').show();
+                        	//$('#error_message').hide();
+                        }
+                        ctlr.showAll();
+                    }, function(error){
+                        console.log(error);
+                    })
+            }
+
+
+            ctlr.deleteProduct = function(product){
+                if (confirm("Are you sure you want to delete?") == true){
+                    var pid = product.pid;
+                    var url = 'http://localhost:3000/api/products/' + pid;
+                    $http.delete(url).then(function(response){
+                        console.log(response);
+                        if (response.data.error){
+                        	//$('#error_delete').show();
+                        	//$('#create_error').hide();
+                       
+                        }
+                        else {
+                        	//$('#updated_message').show();
+                        	//$('#error_message').hide();
+                        
+                        }
+                        ctlr.showAll();
+                    }, function(error){
+                        console.log(error);
+                    })
+                }
+
             }
 
             ctlr.loadCategories();
