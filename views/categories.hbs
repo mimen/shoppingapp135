@@ -9,7 +9,7 @@
 			<a class="btn btn-default col-sm-offset-0" role="button" href = "../buyshoppingcart/">Buy Shopping Cart</a>
 		</div>
 	</div>
-	
+
 <h1>Categories</h1>
 <br>
 On this page, Owners can:
@@ -22,13 +22,13 @@ On this page, Owners can:
 
 <div ng-app="Categories">
 
-
+<h4>
 	{{#if error}}
-	  <h3>Data modification failure.</h3>
+<span id="create_error">Your category could not be created.</span>
 	{{/if}}
-
-
 <span id="updated_message">Your category was successfully updated.</span>
+<span id="error_message">Your category was could not be updated.</span>
+</h4>
 
 	<categories>
 	</categories>

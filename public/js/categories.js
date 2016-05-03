@@ -1,6 +1,7 @@
 var app = angular.module("Categories", []);
 
 $('#updated_message').hide();
+$('#error_message').hide();
 
 app.factory("httpLoader", ["$http", function ($http) {
     function load(href, done) {
@@ -56,7 +57,16 @@ app.directive("categories", [function (){
             	var url = 'http://localhost:3000/api/categories/';
             	$http.put(url, body).then(function(response){
                         console.log(response);
-                        $('#updated_message').show();
+                        if (response.data.error){
+                        	$('#error_message').show();
+                        	$('#create_error').hide();
+                        	$('#updated_message').hide();
+                        }
+                        else{
+                        	$('#updated_message').show();
+                        	$('#error_message').hide();
+                        	$('#create_error').hide();
+                        }
                         ctlr.loadCategories();
                     }, function(error){
                         console.log(error);

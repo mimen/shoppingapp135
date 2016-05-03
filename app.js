@@ -4,6 +4,12 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var hbs = require('hbs');
+
+// Allows us to pass JSON from server side 
+ hbs.registerHelper('json', function(context) {
+    return JSON.stringify(context);
+ });
 
 // Routes
 var routes = require('./routes/index');
@@ -18,6 +24,7 @@ var db = require('./client/database.js').instance;
 // Redis Store Session
 var session = require('express-session');
 var RedisStore = require('connect-redis')(session);
+
 
 // Initialize the application
 var app = express();
