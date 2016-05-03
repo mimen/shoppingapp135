@@ -190,7 +190,7 @@ selectProductsWithSearch = function(search_string, done){
 
 getCategoriesFromUser = function(username, done){
 
-  var query = "SELECT * FROM Categories" +
+  var query = "SELECT * FROM Categories " +
     "WHERE username = '" + username +"';" ;
 
   db.any(query)
@@ -254,8 +254,6 @@ deleteCategory = function(category_name, done){
       done(false);
   });
 
-
-
 }
 
 module.exports = {
@@ -268,6 +266,6 @@ module.exports = {
 	getProductsInCategory: getProductsInCategory,
 	selectProductsWithSearch: selectProductsWithSearch,
 	addCategory: addCategory,
-	updateCategory:updateCategory,
+	updateCategory: updateCategory,
 	deleteCategory: deleteCategory
 }
