@@ -28,7 +28,7 @@ initializeTables = function(){
   var query2 = "CREATE TABLE Product(" + 
     "productname char(50) PRIMARY KEY," +
     "categoryname char(50) FOREIGN KEY REFERENCES Category(categoryname)," +
-    "SKU int NOT NULL," +
+    "SKU int NOT NULL UNIQUE," +
     "price int NOT NULL" +
     ");";
 
@@ -151,13 +151,13 @@ addCategory = function(name, description, owner){
     .catch(function (error) {
       console.log(error);
       done(false);
-  })
+  });
 
 }
 
 updateCategory = function(cur_name, new_name, new_description, owner){
-  var query = "UPDATE Category" +
-        "SET categoryname = '"+ new_name + "', description = '" + new_description + "'"+
+  var query = "UPDATE Category " +
+        "SET categoryname = '"+ new_name + "', description = '" + new_description + "' "+
         "WHERE categoryname = '" + cur_name +"';";
 
   db.any(query)
@@ -168,12 +168,12 @@ updateCategory = function(cur_name, new_name, new_description, owner){
     .catch(function (error) {
       console.log(error);
       done(false);
-  })
+  });
 
 }
 
 deleteCategory = function(category_name){
-  var query = "DELETE FROM Category" +
+  var query = "DELETE FROM Category " +
         "WHERE categoryname = '" + category_name + "';";
 
   db.any(query)
@@ -184,7 +184,7 @@ deleteCategory = function(category_name){
     .catch(function (error) {
       console.log(error);
       done(false);
-  })
+  });
 
 }
 
