@@ -193,9 +193,10 @@ selectProductsWithSearch = function(search_string, done){
   });
 }
 
-getCategoriesFromUser = function(username, done){
+getCategories = function(done){
 
-  var query = "SELECT * FROM Categories " +
+  var query = "SELECT c.*, COUNT(p.pid) as productCount FROM Categories c " +
+  		"LEFT JOIN products p ON (p.categoryname = c.categoryname) GROUP BY c.cid " + 
   		"ORDER BY cid ASC;" ;
 
   db.any(query)
@@ -283,7 +284,7 @@ module.exports = {
 	addUser: addUser,
 	getUser: getUser,
 	addProduct: addProduct,
-	getCategoriesFromUser: getCategoriesFromUser,
+	getCategories: getCategories,
 	getProductsInCategory: getProductsInCategory,
 	selectProductsWithSearch: selectProductsWithSearch,
 	addCategory: addCategory,
