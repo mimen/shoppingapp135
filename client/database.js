@@ -26,18 +26,18 @@ initializeTables = function(){
 		"state char(2) NOT NULL" +
 		");";
 
-	var query2 = "CREATE TABLE Products(" + 
-		"productname char(50) PRIMARY KEY," +
-		"categoryname char(50) REFERENCES Categories(categoryname)," +
-		"SKU int NOT NULL UNIQUE," +
-		"price int NOT NULL" +
-		");";
+	var query2 = "CREATE TABLE Categories(" + 
+    "categoryname char(50) PRIMARY KEY," +
+    "description char(50) NOT NULL," +
+    "username char(50) REFERENCES Users(username)" +
+    ");";
 
-	var query3 = "CREATE TABLE Categories(" + 
-		"categoryname char(50) PRIMARY KEY," +
-		"description char(50) NOT NULL," +
-		"username char(50) REFERENCES Users(username)" +
-		");";
+	var query3 = "CREATE TABLE Products(" + 
+    "productname char(50) PRIMARY KEY," +
+    "categoryname char(50) REFERENCES Categories(categoryname)," +
+    "SKU int NOT NULL UNIQUE," +
+    "price int NOT NULL" +
+    ");";
 
 	var query4 = "CREATE TABLE Orders(" +
 		"ordername char(50) PRIMARY KEY," +
@@ -265,9 +265,9 @@ module.exports = {
   getUser: getUser,
   addProduct: addProduct,
   getCategoriesFromUser: getCategoriesFromUser,
-  getProductsInCategory, getProductsInCategory,
-  selectProductsWithSearch, selectProductsWithSearch,
+  getProductsInCategory: getProductsInCategory,
+  selectProductsWithSearch: selectProductsWithSearch,
   addCategory: addCategory,
-  updateCategory:updateCategory,
+  updateCategory: updateCategory,
   deleteCategory: deleteCategory
 }
