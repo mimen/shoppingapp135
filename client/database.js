@@ -44,16 +44,16 @@ initializeTables = function(){
 
 	var query4 = "CREATE TABLE Orders(" +
 		"oid serial PRIMARY KEY," +
-		"ordername char(50) NOT NULL UNIQUE," +
 		"date char(50) NOT NULL," +
-		"username char(50) REFERENCES Users(username)" +
+		"username char(50) REFERENCES Users(username)," +
+    "total int NOT NULL CHECK (total > 0)," + 
+    "ccn char(16) NOT NULL" + 
 		");";
 
-	var query5 = "CREATE TABLE OrderItems(" + 
-		"iid serial PRIMARY KEY," +
-		"itemname char(50) NOT NULL UNIQUE," +
+	var query5 = "CREATE TABLE LineItems(" + 
+    "lid serial PRIMARY KEY," +
 		"productname char(50) REFERENCES Products(productname)," +
-		"ordername char(50) REFERENCES Orders(ordername)," +
+		"oid serial REFERENCES Orders(oid)," +
 		"quantity int NOT NULL CHECK (quantity > 0)," +
 		"price int NOT NULL CHECK (price > 0)" +
 		");";
@@ -97,7 +97,6 @@ initializeTables = function(){
 	    .catch(function (error) {
 	       console.log(error);
 	    });
-
 }
 
 
@@ -320,6 +319,56 @@ deleteCategory = function(cid, done){
 
 }
 
+
+addOrder = function(date, username, ccn, total, done){
+  var query = "INSERT INTO Orders" +
+        "(date, username, ccn, total) " + 
+         "VALUES ('"
+          + date + "', '"
+          + username + "', '" 
+          + ccn + "', '" 
+          + total + "')" 
+          + "RETURNING oid;";
+  db.any(query)
+    .then(function (data) {
+      console.log(data[0]);
+        done(data[0], true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(null, false);
+  });
+}
+
+addItemsToOrder = function(oid, cart, done){
+  addItemsToOrderRecurse(oid, cart, 0, done);
+}
+
+addItemsToOrderRecurse = function(oid, cart, index, done){
+  var item = cart[index];
+  var query = "INSERT INTO LineItems" +
+        "(productname, oid, quantity, price) " + 
+         "VALUES ('"
+          + item.productname + "', '"
+          + oid.oid + "', '" 
+          + item.quantity + "', '" 
+          + item.price + "');";
+  db.any(query)
+      .then(function (data) {
+        console.log(data);
+        index++;
+        if (index == cart.length)
+          done(true)
+        else
+          addItemsToOrderRecurse(oid, cart, index, done);
+      })
+      .catch(function (error) {
+        console.log("hi");
+        console.log(error);
+        done(false);
+    });
+}
+
 module.exports = {
 	instance: db,
 	initialize: initializeTables,
@@ -334,6 +383,8 @@ module.exports = {
   deleteProduct: deleteProduct,
 	addCategory: addCategory,
 	updateCategory: updateCategory,
-	deleteCategory: deleteCategory
+	deleteCategory: deleteCategory,
+  addOrder: addOrder,
+  addItemsToOrder: addItemsToOrder
 
 }
