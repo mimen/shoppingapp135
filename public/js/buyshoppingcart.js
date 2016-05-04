@@ -70,8 +70,6 @@ app.directive("buyshoppingcart", [function (){
                         }
                         else {
                             console.log("success");
-
-
                         }
                     }, function(error){
                         console.log(error);

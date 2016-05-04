@@ -86,7 +86,7 @@ router.get('/products/:cname', function(req, res, next) {
 
 /* UPDATE product information using product ID. */
 router.post('/products/', function(req, res, next) {
-	var pname = req.body.productname.trim;
+	var pname = req.body.productname;
 	var sku = req.body.sku;
 	var price = req.body.price;
 	var cname = req.body.categoryname;
@@ -178,6 +178,8 @@ router.post('/cart/checkout/', function(req, res, next) {
 	var total = req.body.total;
 	var ccn = req.body.ccn;
 	var cart = req.body.cart;
+
+	req.session.total = req.body.total;
 
 	db.addOrder(date, username, ccn, total, function(oid, success){
 		if (success){

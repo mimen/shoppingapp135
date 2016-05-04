@@ -286,7 +286,6 @@ addCategory = function(name, description, owner, done){
 
 }
 
-//TODO: only update respective descriptions needed
 updateCategory = function(cid, new_name, new_description, done){
   var query = "UPDATE Categories " +
         "SET categoryname = '"+ new_name + "', description = '" + new_description + "' "+

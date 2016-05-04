@@ -115,8 +115,10 @@ router.get('/buyshoppingcart', verifyLoggedIn, function(req, res, next) {
 
 /* GET confirmation page. */
 router.get('/confirmation', verifyLoggedIn, function(req, res, next) {
+  var order = req.session.cart;
+  req.session.cart = [];
   var username = req.session.user.username;
-  res.render('confirmation');
+  res.render('confirmation', {order: order, total: req.session.total});
 });
 
 router.get('/logout/', function(req, res, next){
