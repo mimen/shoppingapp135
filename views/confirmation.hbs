@@ -4,17 +4,17 @@
 	<a class="btn btn-default col-sm-offset-0" role="button" href = "../productsbrowsing/">Products Browsing</a>
 </div>
 <br>
-<div class="row">
-  	<div class="form-group col-md-5">
-  		<h4>You've successfully purchased:</h4><br>
-  		<form class="form-horizontal">
-			<div class = "form-inline form-group">
-	  			<label class="col-md-3 control-label">Product A</label><br><br>
-	  			<label class="col-md-3 control-label">Product B</label>
-	  		</div>
-		</form>
-		<br>
-  	</div>
+
+
+<div ng-app="Confirmation">
+	<confirmation></confirmation>
 </div>
+
+
+<script type="text/javascript">
+	var mycart = {{{json order}}};
+	var mytotal = {{{json total}}};
+</script>
+
 
 <script src="../js/confirmation.js"></script>

@@ -179,6 +179,8 @@ router.post('/cart/checkout/', function(req, res, next) {
 	var ccn = req.body.ccn;
 	var cart = req.body.cart;
 
+	req.session.total = req.body.total;
+
 	db.addOrder(date, username, ccn, total, function(oid, success){
 		if (success){
 			console.log("Order added");
