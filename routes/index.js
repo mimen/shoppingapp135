@@ -93,9 +93,16 @@ router.get('/productsbrowsing', verifyLoggedIn, function(req, res, next) {
 });
 
 /* GET product_order page. */
-router.get('/productorder', verifyLoggedIn, function(req, res, next) {
+router.get('/productorder/:pid', verifyLoggedIn, function(req, res, next) {
   var username = req.session.user.username;
-  res.render('productorder', {username:username});
+  db.getProduct(req.params.pid, function(product, success){
+    if (success){
+      console.log(product);
+      res.render('productorder', {username:username, product:product});
+    }
+    else 
+      res.render('failure');
+  })
 });
 
 /* GET buy_shopping_cart page. */
