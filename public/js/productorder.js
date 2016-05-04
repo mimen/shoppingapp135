@@ -53,8 +53,24 @@ app.directive("productorder", [function (){
                     }, function(error){
                         console.log(error);
                     })
-
             }
+
+
+            ctlr.getCart = function(){
+                var url = 'http://localhost:3000/api/cart/';
+                httpLoader.load(url, function (err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        console.log("loaded");
+                        ctlr.cart = result;
+                        console.log(result);
+                    }
+                });             
+            }
+
+            ctlr.getCart();
 
         }],
         controllerAs: "ctlr"
