@@ -165,9 +165,11 @@ getProducts = function(search_string, done){
   var query = "SELECT * FROM Products" ;
 
     if (search_string == "")
-      query += ";";
+      query += "";
     else
-      query += " WHERE productname LIKE '%" + search_string +"%';" ;
+      query += " WHERE productname LIKE '%" + search_string +"%'" ;
+
+    query += " ORDER BY pid ASC;" 
 
   db.any(query)
     .then(function (data) {
@@ -185,9 +187,11 @@ getProductsInCategory = function(categoryname, search_string, done){
     "WHERE categoryname = '" + categoryname +"'" ;
 
     if (search_string == "")
-      query += ";";
+      query += "";
     else
-      query += " AND productname LIKE '%" + search_string +"%';" ;
+      query += " AND productname LIKE '%" + search_string +"%'" ;
+
+    query += " ORDER BY pid ASC;" 
 
   db.any(query)
     .then(function (data) {
