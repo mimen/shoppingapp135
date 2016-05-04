@@ -1,9 +1,16 @@
-<h1>Confirmation</h1>
-<br>
-<div class="row">
-	<a class="btn btn-default col-sm-offset-0" role="button" href = "../productsbrowsing/">Products Browsing</a>
+<div class = "form-inline form-group">
+	<label id = "hello" class="col-sm-offset-0 control-label">Hello {{username}}</label>
+	<a role="button" class="col-sm-offset-0 btn btn-danger" href="/logout/">Logout</a>
 </div>
-<br>
+
+<h1>Confirmation</h1>
+<a class="btn btn-default col-sm-offset-0" role="button" href = "../home/">Home</a>
+{{#if isOwner}}
+  	<a class="btn btn-default col-sm-offset-0" role="button" href = "/categories/">Categories</a>
+	<a class="btn btn-default col-sm-offset-0" role="button" href = "/products/">Products</a>
+{{/if}}
+<a class="btn btn-default col-sm-offset-0" role="button" href = "/productsbrowsing/">Products Browsing</a>
+<br><br>
 
 
 <div ng-app="Confirmation">

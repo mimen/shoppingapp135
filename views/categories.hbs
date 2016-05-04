@@ -1,17 +1,20 @@
+<div class = "form-inline form-group">
+	<label id = "hello" class="col-sm-offset-0 control-label">Hello {{username}}</label>
+	<a role="button" class="col-sm-offset-0 btn btn-danger" href="/logout/">Logout</a>
+</div>
+
 {{#if isOwner}}
 
-	<div class = "row">
-		<div class = "form-inline form-group col-md-offset-0">
-			<a class="btn btn-default col-sm-offset-0" role="button" href = "../home/">Home</a>
-			<a class="btn btn-default col-sm-offset-0" role="button" href = "../categories/">Categories</a>
-			<a class="btn btn-default col-sm-offset-0" role="button" href = "../products/">Products</a>
-			<a class="btn btn-default col-sm-offset-0" role="button" href = "../productsbrowsing/">Products Browsing</a>
-			<a class="btn btn-default col-sm-offset-0" role="button" href = "../buyshoppingcart/">Buy Shopping Cart</a>
-		</div>
-	</div>
 
 <h1>Categories</h1>
-<br>
+
+<a class="btn btn-default col-sm-offset-0" role="button" href = "../home/">Home</a>
+<a class="btn btn-default col-sm-offset-0" role="button" href = "../categories/">Categories</a>
+<a class="btn btn-default col-sm-offset-0" role="button" href = "../products/">Products</a>
+<a class="btn btn-default col-sm-offset-0" role="button" href = "../productsbrowsing/">Products Browsing</a>
+<a class="btn btn-default col-sm-offset-0" role="button" href = "../buyshoppingcart/">Buy Shopping Cart</a>
+		
+<br><br>
 On this page, Owners can:
 <ul>
 <li>View all categories</li>

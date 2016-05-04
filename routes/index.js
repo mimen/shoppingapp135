@@ -96,10 +96,11 @@ router.get('/productsbrowsing', verifyLoggedIn, function(req, res, next) {
 /* GET product_order page. */
 router.get('/productorder/:pid', verifyLoggedIn, function(req, res, next) {
   var username = req.session.user.username;
+  var isOwner = req.session.user.type.trim() == "owner";
   db.getProduct(req.params.pid, function(product, success){
     if (success){
       console.log(product);
-      res.render('productorder', {username:username, product:product});
+      res.render('productorder', {username:username, isOwner:isOwner, product:product});
     }
     else 
       res.render('failure');
@@ -118,7 +119,8 @@ router.get('/confirmation', verifyLoggedIn, function(req, res, next) {
   var order = req.session.cart;
   req.session.cart = [];
   var username = req.session.user.username;
-  res.render('confirmation', {order: order, total: req.session.total});
+  var isOwner = req.session.user.type.trim() == "owner";
+  res.render('confirmation', {username:username, isOwner:isOwner, order: order, total: req.session.total});
 });
 
 router.get('/logout/', function(req, res, next){

@@ -4,11 +4,13 @@ Assumptions
 -When a user is logged in, and the user tries to access the "Login" or "Signup" page, the user is automatically redirected to the "Home" page.
 -The logout button that we added will enable one user to log out and another to sign in immediately from the same browser.
 -There are no links on any pages to the "Product Order" page except for the "order this product" button on the "Products Browsing" page.
--The only link on the "Product Browsing" page is a link to the "Buy Shopping Cart" page so that a customer can check out at a convenient time.
 -An owner can delete/update only categories that he/she created.
 -Our shopping cart is session-scoped, and it saves the order and all the line items on checkout
 -The price is fixed at the point that the user added the product to the cart.
 -We assume that the customer would want to go home at any point in time, so we included the link on each page.
+-We included "Hello <username>" on every page, even the pages that customers can't access, for consistency.
+-For owners, we included every link on every page, other than "Product Order"
+-For customers, we included "Home," "Product Browsing," and "Buy Shopping Cart" on each page.
 
 
 5873c6e20d8577759c46204e7bb4dd24
