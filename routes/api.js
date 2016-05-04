@@ -86,7 +86,7 @@ router.get('/products/:cname', function(req, res, next) {
 
 /* UPDATE product information using product ID. */
 router.post('/products/', function(req, res, next) {
-	var pname = req.body.productname;
+	var pname = req.body.productname.trim;
 	var sku = req.body.sku;
 	var price = req.body.price;
 	var cname = req.body.categoryname;
@@ -151,9 +151,9 @@ router.post('/cart/add/', function(req, res, next) {
 		req.session.cart = [];
 
 	var line_item = {
-		productname: req.body.productname,
-		categoryname: req.body.categoryname,
-		quantity: req.body.quantity,
+		productname: req.body.productname.trim(),
+		categoryname: req.body.categoryname.trim(),
+		quantity: parseInt(req.body.quantity),
 		price: req.body.price,
 		SKU: req.body.SKU
 	}
@@ -163,5 +163,44 @@ router.post('/cart/add/', function(req, res, next) {
 	res.json({"success":"success"});
 
 })
+
+router.post('/cart/checkout/', function(req, res, next) {
+
+	console.log("Checkout request");
+
+	if (!req.session.cart)
+		res.json({"error":"error"});
+
+	console.log(req.body);
+
+	var date = "1234";
+	var username = req.body.username.trim();
+	var total = req.body.total;
+	var ccn = req.body.ccn;
+	var cart = req.body.cart;
+
+	db.addOrder(date, username, ccn, total, function(oid, success){
+		if (success){
+			console.log("Order added");
+			db.addItemsToOrder(oid, cart, function(success){
+				if (success){
+					console.log("Added items");
+					res.json({"success":"success"});
+				}
+				else{
+					res.json({"error":"error"});
+				}
+
+			})
+		}
+		else {
+			res.json({"error":"error"});
+		}
+
+	});
+
+})
+
+
 
 module.exports = router;
