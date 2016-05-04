@@ -1,40 +1,14 @@
 <h1>Buy Shopping Cart</h1>
 
-<div class="row">
-  	<div class="form-group col-md-5">
-  		<h3>Products</h3><br>
-  		<form class="form-horizontal">
-			<div class = "form-inline form-group">
-	  			<label class="col-md-3 control-label">Product A</label>
-	  			<input id="product_name" class="form-control col-md-offset-0" type="number" name="quantity" placeholder="Quantity">
-	  			<input id="product_name" class="form-control col-md-offset-0" type="text" name="price" placeholder="Price">
-			</div>
-			<div class = "form-inline form-group">
-	  			<label class="col-md-3 control-label">Product A</label>
-	  			<input id="product_name" class="form-control col-md-offset-0" type="number" name="quantity" placeholder="Quantity">
-	  			<input id="product_name" class="form-control col-md-offset-0" type="text" name="price" placeholder="Price">
-			</div>
-		</form>
-		<br>
-  	</div>
+
+<div ng-app="BuyShoppingCart">
+	<buyshoppingcart></buyshoppingcart>
 </div>
 
-<div class="row">
-	<div class="form-group col-md-5">
-		<form class="form-horizontal">
-			<div class = "form-inline form-group">
-  				<label class="col-md-3 control-label">Credit Card</label>
-  				<input id="product_name" class="form-control col-md-offset-0" type="number" name="name" placeholder="e.g. 1111222233334444">
-  				<br><br><br>
-  				<a class="btn btn-success col-sm-offset-1" href = "../confirmation/" role="button">Purchase</a>
-  			</div>
-	  	</form>
-	</div>
-</div>
 
-<div class="row">
-	<div class = "form-inline form-group">
-	</div>
-</div>
+<script type="text/javascript">
+	var loggedinuser = {{{json username}}};
+</script>
+
 
 <script src="../js/buyshoppingcart.js"></script>
