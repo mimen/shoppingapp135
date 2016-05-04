@@ -10,6 +10,7 @@ $('#delete_error').hide();
 $('#add_success').hide();
 $('#update_success').hide();
 $('#delete_success').hide();
+$('#search_header').hide();
 
 var app = angular.module("Products", []);
 
@@ -53,6 +54,11 @@ app.directive("products", [function (){
             	else{
             		ctlr.showCategory(ctlr.curr_category);
             	}
+
+            	if (ctlr.search == "")
+					$('#search_header').hide();
+				else
+					$('#search_header').show();
             }
 
             // Populate the list of categories
