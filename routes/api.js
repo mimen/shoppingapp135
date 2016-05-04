@@ -91,7 +91,7 @@ router.post('/products/', function(req, res, next) {
 	var price = req.body.price;
 	var cname = req.body.categoryname;
 	// Get the categories from the database and render the json.
-	db.updateProduct(pname, cname, sku, price, function(success){
+	db.addProduct(pname, cname, sku, price, function(success){
 		if (success){
 			res.json({"success":"success"});
 		}
