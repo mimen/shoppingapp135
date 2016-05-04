@@ -23,7 +23,7 @@ initializeTables = function(){
 		"uid serial PRIMARY KEY," +
 		"username char(50) NOT NULL UNIQUE," +
 		"type char(8) NOT NULL," +
-		"age int NOT NULL," +
+		"age int NOT NULL CHECK (age > 0)," +
 		"state char(2) NOT NULL" +
 		");";
 
@@ -38,8 +38,8 @@ initializeTables = function(){
 		"pid serial PRIMARY KEY," +
 	    "productname char(50) NOT NULL UNIQUE," +
 	    "categoryname char(50) REFERENCES Categories(categoryname)," +
-	    "SKU int NOT NULL UNIQUE," +
-	    "price int NOT NULL" +
+	    "SKU int NOT NULL UNIQUE CHECK (SKU > 0)," +
+	    "price int NOT NULL CHECK (price > 0)" +
 	    ");";
 
 	var query4 = "CREATE TABLE Orders(" +
@@ -54,8 +54,8 @@ initializeTables = function(){
 		"itemname char(50) NOT NULL UNIQUE," +
 		"productname char(50) REFERENCES Products(productname)," +
 		"ordername char(50) REFERENCES Orders(ordername)," +
-		"quantity int NOT NULL," +
-		"price int NOT NULL" +
+		"quantity int NOT NULL CHECK (quantity > 0)," +
+		"price int NOT NULL CHECK (price > 0)" +
 		");";
 
 	db.any(query1)
