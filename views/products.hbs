@@ -1,6 +1,14 @@
 {{#if isOwner}}
 
 <h1>Products</h1>
+On this page, Owners can:
+<ul>
+<li>View all products in the store</li>
+<li>View all products in a particular category</li>
+<li>Create new products</li>
+<li>Update and delete products</li>
+<li>Search through products</li>
+</ul>
 
 <div class = "row">
 	<div class = "form-inline form-group col-md-offset-0">
@@ -11,6 +19,15 @@
 		<a class="btn btn-default col-sm-offset-0" role="button" href = "../buyshoppingcart/">Buy Shopping Cart</a>
 	</div>
 </div>
+
+<h4>
+<span id="add_error">The product could not be added.</span>
+<span id="delete_error">The product could not be deleted.</span>
+<span id="update_error">The product could not be updated.</span>
+<span id="add_success">The product was successfully added.</span>
+<span id="delete_success">The product was successfully deleted.</span>
+<span id="update_success">The product was successfully updated.</span>
+</h4>
 
 <div ng-app="Products">
 	<products></products>

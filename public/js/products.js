@@ -3,6 +3,14 @@ $(".category").click(function(){
 	$("#category_name").text($(this).text());
 })
 
+
+$('#add_error').hide();
+$('#update_error').hide();
+$('#delete_error').hide();
+$('#add_success').hide();
+$('#update_success').hide();
+$('#delete_success').hide();
+
 var app = angular.module("Products", []);
 
 app.factory("httpLoader", ["$http", function ($http) {
@@ -34,6 +42,19 @@ app.directive("products", [function (){
             ctlr.username = loggedinuser;
             ctlr.search = "";
 
+            ctlr.header = "All Products";
+
+            ctlr.nextFunc = 0;
+
+            ctlr.execute = function(){
+            	if (ctlr.nextFunc == 0){
+            		ctlr.showAll();
+            	}
+            	else{
+            		ctlr.showCategory(ctlr.curr_category);
+            	}
+            }
+
             // Populate the list of categories
             ctlr.loadCategories = function(){
                 httpLoader.load('http://localhost:3000/api/categories', function (err, result) {
@@ -57,12 +78,14 @@ app.directive("products", [function (){
                         console.log("loaded");
                         console.log(result);
                         ctlr.products = result;
+                        ctlr.nextFunc = 0;
+            			ctlr.header = "All Products";
                     }
                 });
             }
 
             ctlr.showCategory = function(category){
-            	var name = category.categoryname;
+            	var name = category.categoryname.trim();
             	var url = 'http://localhost:3000/api/products/' + name + '?search=' + ctlr.search;
                 httpLoader.load(url, function (err, result) {
                     if (err) {
@@ -71,6 +94,9 @@ app.directive("products", [function (){
                     else {
                         console.log("loaded");
                         ctlr.products = result;
+                        ctlr.nextFunc = 1;
+                        ctlr.curr_category = category;
+            			ctlr.header = "Products in category: " + category.categoryname;
                     }
                 });            	
             }
@@ -93,12 +119,20 @@ app.directive("products", [function (){
             	$http.put(url, body).then(function(response){
                         console.log(response);
                         if (response.data.error){
-                        	//$('#error_delete').show();
-                        	//$('#create_error').hide();
+                        	$('#add_error').hide();
+							$('#update_error').show();
+							$('#delete_error').hide();
+							$('#add_success').hide();
+							$('#update_success').hide();
+							$('#delete_success').hide();
                         }
                         else {
-                        	//$('#updated_message').show();
-                        	//$('#error_message').hide();
+                        	$('#add_error').hide();
+							$('#update_error').hide();
+							$('#delete_error').hide();
+							$('#add_success').hide();
+							$('#update_success').show();
+							$('#delete_success').hide();
                         }
                         ctlr.showAll();
                     }, function(error){
@@ -117,18 +151,27 @@ app.directive("products", [function (){
             		categoryname: cname,
             		price: price
             	};
+            	console.log(body);
             	var url = 'http://localhost:3000/api/products/';
             	$http.post(url, body).then(function(response){
                         console.log(response);
                         if (response.data.error){
-                        	//$('#error_delete').show();
-                        	//$('#create_error').hide();
+                        	$('#add_error').show();
+							$('#update_error').hide();
+							$('#delete_error').hide();
+							$('#add_success').hide();
+							$('#update_success').hide();
+							$('#delete_success').hide();
                         }
                         else {
-                        	//$('#updated_message').show();
-                        	//$('#error_message').hide();
+                        	$('#add_error').hide();
+							$('#update_error').hide();
+							$('#delete_error').hide();
+							$('#add_success').show();
+							$('#update_success').hide();
+							$('#delete_success').hide();
                         }
-                        ctlr.showAll();
+                        ctlr.execute();
                     }, function(error){
                         console.log(error);
                     })
@@ -142,13 +185,21 @@ app.directive("products", [function (){
                     $http.delete(url).then(function(response){
                         console.log(response);
                         if (response.data.error){
-                        	//$('#error_delete').show();
-                        	//$('#create_error').hide();
+                        	$('#add_error').hide();
+							$('#update_error').hide();
+							$('#delete_error').show();
+							$('#add_success').hide();
+							$('#update_success').hide();
+							$('#delete_success').hide();
                        
                         }
                         else {
-                        	//$('#updated_message').show();
-                        	//$('#error_message').hide();
+                        	$('#add_error').hide();
+							$('#update_error').hide();
+							$('#delete_error').hide();
+							$('#add_success').hide();
+							$('#update_success').hide();
+							$('#delete_success').show();
                         
                         }
                         ctlr.showAll();
@@ -159,7 +210,18 @@ app.directive("products", [function (){
 
             }
 
+            ctlr.setSearch = function(){
+            	ctlr.search = $('#search_term').val();
+            	ctlr.execute();
+            }
+
+            ctlr.clearSearch = function(){
+            	ctlr.search = "";
+            	ctlr.execute();
+            }
+
             ctlr.loadCategories();
+            ctlr.execute();
 
         }],
         controllerAs: "ctlr"
