@@ -89,7 +89,8 @@ router.get('/products', verifyLoggedIn, function(req, res, next) {
 /* GET products_browsing page. */
 router.get('/productsbrowsing', verifyLoggedIn, function(req, res, next) {
   var username = req.session.user.username;
-  res.render('productsbrowsing', {username:username});
+  var isOwner = req.session.user.type.trim() == "owner";
+  res.render('productsbrowsing', {username:username, isOwner:isOwner});
 });
 
 /* GET product_order page. */
@@ -108,7 +109,8 @@ router.get('/productorder/:pid', verifyLoggedIn, function(req, res, next) {
 /* GET buy_shopping_cart page. */
 router.get('/buyshoppingcart', verifyLoggedIn, function(req, res, next) {
   var username = req.session.user.username;
-  res.render('buyshoppingcart', {username:username});
+  var isOwner = req.session.user.type.trim() == "owner";
+  res.render('buyshoppingcart', {username:username, isOwner:isOwner});
 });
 
 /* GET confirmation page. */

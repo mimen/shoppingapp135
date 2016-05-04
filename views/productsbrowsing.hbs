@@ -1,5 +1,13 @@
 <h1>Products Browsing</h1>
 
+<a class="btn btn-default col-sm-offset-0" role="button" href = "../home/">Home</a>
+
+{{#if isOwner}}
+{{else}}
+	<a class="btn btn-default col-sm-offset-0" role="button" href = "../buyshoppingcart/">Buy Shopping Cart</a>
+{{/if}}
+
+
 <div ng-app="ProductsBrowse">
 	<productsbrowse></products>
 </div>
