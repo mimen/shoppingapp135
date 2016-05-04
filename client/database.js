@@ -159,6 +159,20 @@ addProduct = function(productname, categoryname, SKU, price, done){
 
 }
 
+getProduct = function(pid, done){
+  var query = "SELECT * FROM Products " +
+    "WHERE pid = '" + pid +"';";
+
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(data[0], true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(null, false);
+  });
+}
 
 getProducts = function(search_string, done){
 
@@ -313,6 +327,7 @@ module.exports = {
 	getUser: getUser,
 	addProduct: addProduct,
 	getCategories: getCategories,
+  getProduct: getProduct,
   getProducts: getProducts,
 	getProductsInCategory: getProductsInCategory,
   updateProduct: updateProduct,
