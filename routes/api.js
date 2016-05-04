@@ -135,4 +135,33 @@ router.delete('/products/:pid', function(req, res, next) {
 	});
 })
 
+
+router.get('/cart/', function(req, res, next) {
+
+	if (!req.session.cart)
+		res.json([]);
+	else
+		res.json(req.session.cart);
+
+})
+
+router.post('/cart/add/', function(req, res, next) {
+
+	if (!req.session.cart)
+		req.session.cart = [];
+
+	var line_item = {
+		productname: req.body.productname,
+		categoryname: req.body.categoryname,
+		quantity: req.body.quantity,
+		price: req.body.price,
+		SKU: req.body.SKU
+	}
+
+	req.session.cart.push(line_item);
+
+	res.json({"success":"success"});
+
+})
+
 module.exports = router;
