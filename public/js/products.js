@@ -223,6 +223,7 @@ app.directive("products", [function (){
 
             ctlr.clearSearch = function(){
             	ctlr.search = "";
+                $('#search_term').val("");
             	ctlr.execute();
             }
 

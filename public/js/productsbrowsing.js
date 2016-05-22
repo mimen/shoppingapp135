@@ -81,8 +81,8 @@ app.directive("productsbrowse", [function (){
             }
 
             ctlr.showCategory = function(category){
-            	var name = category.categoryname.trim();
-            	var url = 'http://localhost:3000/api/products/' + name + '?search=' + ctlr.search;
+            	var cid = category.id;
+            	var url = 'http://localhost:3000/api/products/' + cid + '?search=' + ctlr.search;
                 httpLoader.load(url, function (err, result) {
                     if (err) {
                         console.log(err);
@@ -92,7 +92,7 @@ app.directive("productsbrowse", [function (){
                         ctlr.products = result;
                         ctlr.nextFunc = 1;
                         ctlr.curr_category = category;
-            			ctlr.header = "Products in category: " + category.categoryname;
+            			ctlr.header = "Products in category: " + category.name;
                     }
                 });            	
             }
@@ -104,6 +104,7 @@ app.directive("productsbrowse", [function (){
 
             ctlr.clearSearch = function(){
             	ctlr.search = "";
+                $('#search_term').val("");
             	ctlr.execute();
             }
 
