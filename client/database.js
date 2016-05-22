@@ -258,7 +258,10 @@ deleteProduct = function(id, done){
 getCategories = function(done){
 
   var query = "SELECT c.*, COUNT(p.id) as productCount FROM categories c " +
-  		"LEFT JOIN products p ON (p.category_id = c.id) GROUP BY c.id " + 
+  		"LEFT JOIN products p " +
+      "ON (p.category_id = c.id) " + 
+      "AND p.is_delete = false " +  
+      "GROUP BY c.id " +
   		"ORDER BY c.id ASC;" ;
 
   db.any(query)

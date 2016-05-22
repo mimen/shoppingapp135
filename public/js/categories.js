@@ -80,7 +80,7 @@ app.directive("categories", [function (){
             	console.log("delete");
             	
                 if (confirm("Are you sure you want to delete?") == true){
-                    var cid = category.cid;
+                    var cid = category.id;
                     var url = 'http://localhost:3000/api/categories/' + cid;
                     $http.delete(url).then(function(response){
                         console.log(response);
