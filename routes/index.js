@@ -10,7 +10,6 @@ var db = require('../client/database.js');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  db.initialize();
   res.redirect('/home/');
 });
 
@@ -70,7 +69,7 @@ router.get('/categories', verifyLoggedIn, function(req, res, next) {
 router.get('/categories/submit/', verifyLoggedIn, function(req, res, next){
   var username = req.session.user.username;
   var isOwner = req.session.user.type.trim() == "owner";
-  db.addCategory(req.query.name, req.query.description, req.session.user.username, function(success){
+  db.addCategory(req.query.name, req.query.description, function(success){
     if (!success){
       res.render('categories', {error:true, isOwner:isOwner, username:username});
     }

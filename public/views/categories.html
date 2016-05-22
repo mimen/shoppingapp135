@@ -3,14 +3,14 @@
 		<br>
 		<div class = "form-inline form-group">
 		  	<label class="col-sm-4 control-label">Name</label>
-		  	<input id="name{{$index}}" value="{{category.categoryname.trim()}}" class="form-control col-sm-offset-0" type="text" name="name">
+		  	<input id="name{{$index}}" value="{{category.name.trim()}}" class="form-control col-sm-offset-0" type="text" name="name">
 		</div>
 		<div class = "form-inline form-group">
 		  	<label class="col-sm-4 control-label">Description</label>
 		  	<textarea rows="4" cols="24" id="description{{$index}}" class="form-control col-sm-offset-0" name="description">{{category.description.trim()}}</textarea>
 		</div>
 
-		<div class = "form-inline form-group" ng-show="ctlr.username == category.username.trim()">
+		<div class = "form-inline form-group">
 			<button ng-click="ctlr.updateCategory(category, $index)" class="btn btn-primary col-sm-offset-0">Update</button>
 			<button ng-click="ctlr.deleteCategory(category)" ng-show="category.productcount == 0" class="btn btn-primary col-sm-offset-0">Delete</button>
 		</div>

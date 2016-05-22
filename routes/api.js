@@ -69,11 +69,11 @@ router.get('/products/', function(req, res, next) {
 
 
 /* GET all products that belong to a category. */
-router.get('/products/:cname', function(req, res, next) {
+router.get('/products/:cid', function(req, res, next) {
 	var search = req.query.search;
-	var categoryname = req.params.cname;
+	var cid = req.params.cid;
 	// Get the categories from the database and render the json.
-	db.getProductsInCategory(categoryname, search, function(products, success){
+	db.getProductsInCategory(cid, search, function(products, success){
 		if (success){
 			res.json(products);
 		}
@@ -84,14 +84,14 @@ router.get('/products/:cname', function(req, res, next) {
 })
 
 
-/* UPDATE product information using product ID. */
+/* POST product information using product ID. */
 router.post('/products/', function(req, res, next) {
 	var pname = req.body.productname;
 	var sku = req.body.sku;
 	var price = req.body.price;
-	var cname = req.body.categoryname;
+	var cid = req.body.cid;
 	// Get the categories from the database and render the json.
-	db.addProduct(pname, cname, sku, price, function(success){
+	db.addProduct(pname, cid, sku, price, function(success){
 		if (success){
 			res.json({"success":"success"});
 		}
@@ -108,9 +108,9 @@ router.put('/products/', function(req, res, next) {
 	var pname = req.body.productname;
 	var sku = req.body.sku;
 	var price = req.body.price;
-	var cname = req.body.categoryname;
+	var cid = req.body.cid;
 	// Get the categories from the database and render the json.
-	db.updateProduct(pid, pname, price, sku, cname, function(success){
+	db.updateProduct(pid, pname, price, sku, cid, function(success){
 		if (success){
 			res.json({"success":"success"});
 		}

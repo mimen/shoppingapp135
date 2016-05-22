@@ -100,12 +100,12 @@ initializeTables = function(){
 }
 
 
-addUser = function(name, type, age, state, done){
-	var query = "INSERT INTO Users" +
-				 "(username, type, age, state) " + 
+addUser = function(name, role, age, state, done){
+	var query = "INSERT INTO users" +
+				 "(name, role, age, state) " + 
 				 "VALUES ('"
 				 	+ name + "', '"
-				 	+ type + "', '" 
+				 	+ role + "', '" 
 				 	+ age + "', '"
 				 	+ state + "');";
 	db.any(query)
@@ -120,8 +120,8 @@ addUser = function(name, type, age, state, done){
 }
 
 getUser = function(name, done){
-  var query = "SELECT * FROM Users " +
-              "WHERE username = '"+ name +"';";
+  var query = "SELECT * FROM users " +
+              "WHERE name = '"+ name +"';";
 
   db.any(query)
     .then(function (data) {
@@ -138,14 +138,16 @@ getUser = function(name, done){
 
 }
 
-addProduct = function(productname, categoryname, SKU, price, done){
-  var query = "INSERT INTO Products" +
-        "(productname, categoryname, SKU, price) " + 
+addProduct = function(name, category_id, sku, price, done){
+  var is_delete = false;
+  var query = "INSERT INTO products" +
+        "(name, category_id, sku, price, is_delete) " + 
          "VALUES ('"
-          + productname + "', '"
-          + categoryname + "', '" 
-          + SKU + "', '" 
-          + price + "');";
+          + name + "', '"
+          + category_id + "', '" 
+          + sku + "', '" 
+          + price + "', '" 
+          + is_delete + "');";
   db.any(query)
     .then(function (data) {
       console.log(data);
@@ -158,9 +160,9 @@ addProduct = function(productname, categoryname, SKU, price, done){
 
 }
 
-getProduct = function(pid, done){
-  var query = "SELECT * FROM Products " +
-    "WHERE pid = '" + pid +"';";
+getProduct = function(id, done){
+  var query = "SELECT * FROM products " +
+    "WHERE id = '" + id +"';";
 
   db.any(query)
     .then(function (data) {
@@ -175,14 +177,15 @@ getProduct = function(pid, done){
 
 getProducts = function(search_string, done){
 
-  var query = "SELECT * FROM Products" ;
+  var query = "SELECT * FROM products ";
+    query += "WHERE is_delete = false";
 
     if (search_string == "")
       query += "";
     else
-      query += " WHERE productname LIKE '%" + search_string +"%'" ;
+      query += " AND name LIKE '%" + search_string +"%'" ;
 
-    query += " ORDER BY pid ASC;" 
+    query += " ORDER BY id ASC;" 
 
   db.any(query)
     .then(function (data) {
@@ -195,16 +198,17 @@ getProducts = function(search_string, done){
   });
 }
 
-getProductsInCategory = function(categoryname, search_string, done){
-  var query = "SELECT * FROM Products " +
-    "WHERE categoryname = '" + categoryname +"'" ;
+getProductsInCategory = function(category_id, search_string, done){
+  var query = "SELECT * FROM products " +
+    "WHERE category_id = '" + category_id +"'" + 
+    "AND is_delete = false";
 
     if (search_string == "")
       query += "";
     else
-      query += " AND productname LIKE '%" + search_string +"%'" ;
+      query += " AND name LIKE '%" + search_string +"%'" ;
 
-    query += " ORDER BY pid ASC;" 
+    query += " ORDER BY id ASC;" 
 
   db.any(query)
     .then(function (data) {
@@ -217,11 +221,11 @@ getProductsInCategory = function(categoryname, search_string, done){
   });
 }
 
-updateProduct = function(pid, new_name, new_price, new_sku, new_category, done){
-  var query = "UPDATE Products " +
-        "SET productname = '"+ new_name + "', price = '" + new_price 
-        + "', sku = '"+ new_sku + "', categoryname = '" + new_category +"' " +
-        "WHERE pid = '" + pid +"';";
+updateProduct = function(id, new_name, new_price, new_sku, new_category_id, done){
+  var query = "UPDATE products " +
+        "SET name = '"+ new_name + "', price = '" + new_price 
+        + "', sku = '"+ new_sku + "', category_id = '" + new_category_id +"' " +
+        "WHERE id = '" + id +"';";
 
   db.any(query)
     .then(function (data) {
@@ -234,9 +238,10 @@ updateProduct = function(pid, new_name, new_price, new_sku, new_category, done){
   });
 }
 
-deleteProduct = function(pid, done){
-  var query = "DELETE FROM Products " +
-        "WHERE pid = '" + pid + "';";
+deleteProduct = function(id, done){
+  var query = "UPDATE products " +
+        "SET is_delete = true " +
+        "WHERE id = '" + id +"';";
 
   db.any(query)
     .then(function (data) {
@@ -252,9 +257,9 @@ deleteProduct = function(pid, done){
 
 getCategories = function(done){
 
-  var query = "SELECT c.*, COUNT(p.pid) as productCount FROM Categories c " +
-  		"LEFT JOIN products p ON (p.categoryname = c.categoryname) GROUP BY c.cid " + 
-  		"ORDER BY cid ASC;" ;
+  var query = "SELECT c.*, COUNT(p.id) as productCount FROM categories c " +
+  		"LEFT JOIN products p ON (p.category_id = c.id) GROUP BY c.id " + 
+  		"ORDER BY c.id ASC;" ;
 
   db.any(query)
     .then(function (data) {
@@ -267,13 +272,12 @@ getCategories = function(done){
   });
 }
 
-addCategory = function(name, description, owner, done){
-  var query = "INSERT INTO Categories " +
-        "(categoryname, description, username) " + 
+addCategory = function(name, description, done){
+  var query = "INSERT INTO categories " +
+        "(name, description) " + 
          "VALUES ('"
           + name + "', '"
-          + description + "', '" 
-          + owner + "');";
+          + description + "');";
   db.any(query)
     .then(function (data) {
       console.log(data);
@@ -286,10 +290,10 @@ addCategory = function(name, description, owner, done){
 
 }
 
-updateCategory = function(cid, new_name, new_description, done){
-  var query = "UPDATE Categories " +
-        "SET categoryname = '"+ new_name + "', description = '" + new_description + "' "+
-        "WHERE cid = '" + cid +"';";
+updateCategory = function(id, new_name, new_description, done){
+  var query = "UPDATE categories " +
+        "SET name = '"+ new_name + "', description = '" + new_description + "' "+
+        "WHERE id = '" + id +"';";
 
   db.any(query)
     .then(function (data) {
@@ -302,9 +306,9 @@ updateCategory = function(cid, new_name, new_description, done){
   });
 }
 
-deleteCategory = function(cid, done){
-  var query = "DELETE FROM Categories " +
-        "WHERE cid = '" + cid + "';";
+deleteCategory = function(id, done){
+  var query = "DELETE FROM categories " +
+        "WHERE id = '" + id + "';";
 
   db.any(query)
     .then(function (data) {

@@ -91,8 +91,8 @@ app.directive("products", [function (){
             }
 
             ctlr.showCategory = function(category){
-            	var name = category.categoryname.trim();
-            	var url = 'http://localhost:3000/api/products/' + name + '?search=' + ctlr.search;
+            	var cid = category.id;
+            	var url = 'http://localhost:3000/api/products/' + cid + '?search=' + ctlr.search;
                 httpLoader.load(url, function (err, result) {
                     if (err) {
                         console.log(err);
@@ -102,7 +102,7 @@ app.directive("products", [function (){
                         ctlr.products = result;
                         ctlr.nextFunc = 1;
                         ctlr.curr_category = category;
-            			ctlr.header = "Products in category: " + category.categoryname;
+            			ctlr.header = "Products in category: " + category.name;
                     }
                 });            	
             }
@@ -111,13 +111,13 @@ app.directive("products", [function (){
              ctlr.updateProduct = function(product, index){
             	var newname = $('#product_name' + index).val();
             	var newsku = $('#sku' + index).val();
-            	var newcname = $('#category_name' + index).val();
+            	//var newcid = $('#category_id' + index).val();
             	var newprice = $('#price' + index).val();
             	var body = {
-            		pid: product.pid,
+            		pid: product.id,
             		productname: newname,
             		sku: newsku,
-            		categoryname: newcname,
+            		cid: product.category_id,
             		price: newprice
             	};
             	console.log(body);
@@ -148,13 +148,13 @@ app.directive("products", [function (){
 
              ctlr.createProduct = function(){
             	var pname = $('#new_pname').val();
-            	var cname = $('#new_cname').val();
+            	var cid = $('#new_cname').val();
             	var price = $('#new_price').val();
             	var sku = $('#new_sku').val();
             	var body = {
             		productname: pname,
             		sku: sku,
-            		categoryname: cname,
+            		cid: cid,
             		price: price
             	};
             	console.log(body);
@@ -186,7 +186,7 @@ app.directive("products", [function (){
 
             ctlr.deleteProduct = function(product){
                 if (confirm("Are you sure you want to delete?") == true){
-                    var pid = product.pid;
+                    var pid = product.id;
                     var url = 'http://localhost:3000/api/products/' + pid;
                     $http.delete(url).then(function(response){
                         console.log(response);
