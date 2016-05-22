@@ -138,29 +138,30 @@ router.delete('/products/:pid', function(req, res, next) {
 
 router.get('/cart/', function(req, res, next) {
 
-	if (!req.session.cart)
-		res.json([]);
-	else
-		res.json(req.session.cart);
+	var uid = req.session.user.id;
+	
+	db.getCart(uid, function(cart, success){
+		if (success)
+			res.json(cart);
+		else
+			res.json({"error":"error"});
+	});
 
 })
 
 router.post('/cart/add/', function(req, res, next) {
 
-	if (!req.session.cart)
-		req.session.cart = [];
+	var uid = req.session.user.id;
+	var pid = req.body.id;
+	var quantity = req.body.quantity;
+	var price = req.body.price;
 
-	var line_item = {
-		productname: req.body.productname.trim(),
-		categoryname: req.body.categoryname.trim(),
-		quantity: parseInt(req.body.quantity),
-		price: req.body.price,
-		SKU: req.body.SKU
-	}
-
-	req.session.cart.push(line_item);
-
-	res.json({"success":"success"});
+	db.addToCart(uid, pid, quantity, price, function(success){
+		if (success)
+			res.json({"success":"success"});
+		else
+			res.json({"error":"error"});
+	});
 
 })
 

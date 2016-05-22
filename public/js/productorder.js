@@ -34,21 +34,19 @@ app.directive("productorder", [function (){
             ctlr.addToCart = function(){
                 var quantity = $('#quantity').val();
                 var body = {
-                    productname: product.productname,
-                    categoryname: product.categoryname,
+                    id: product.id,
                     quantity: quantity,
-                    price: product.price,
-                    SKU: product.SKU
+                    price: product.price
                 }
                 console.log(body);
                 var url = 'http://localhost:3000/api/cart/add/';
                 $http.post(url, body).then(function(response){
                         console.log(response);
                         if (response.data.error){
-
-                        }
+                            console.log("error when adding to cart");
+                        }   
                         else {
-
+                            console.log("added to cart");
                         }
                     }, function(error){
                         console.log(error);

@@ -107,15 +107,16 @@ addUser = function(name, role, age, state, done){
 				 	+ name + "', '"
 				 	+ role + "', '" 
 				 	+ age + "', '"
-				 	+ state + "');";
+				 	+ state + "')" 
+          + "RETURNING id;";
 	db.any(query)
     .then(function (data) {
     	console.log(data);
-        done(true);
+        done(data, true);
     })
     .catch(function (error) {
     	console.log(error);
-    	done(false);
+    	done(null, false);
     });
 }
 
@@ -326,53 +327,42 @@ deleteCategory = function(id, done){
 }
 
 
-addOrder = function(date, username, ccn, total, done){
-  var query = "INSERT INTO Orders" +
-        "(date, username, ccn, total) " + 
+addToCart = function(uid, pid, quantity, price, done){
+  var query = "INSERT INTO orders" +
+        "(user_id, product_id, quantity, price, is_cart) " + 
          "VALUES ('"
-          + date + "', '"
-          + username + "', '" 
-          + ccn + "', '" 
-          + total + "')" 
-          + "RETURNING oid;";
+          + uid + "', '"
+          + pid + "', '" 
+          + quantity + "', '" 
+          + price + "', '" 
+          + true + "');";
   db.any(query)
     .then(function (data) {
       console.log(data[0]);
-        done(data[0], true);
+        done(true);
     })
     .catch(function (error) {
       console.log(error);
-      done(null, false);
+      done(false);
   });
 }
 
-addItemsToOrder = function(oid, cart, done){
-  addItemsToOrderRecurse(oid, cart, 0, done);
-}
-
-addItemsToOrderRecurse = function(oid, cart, index, done){
-  var item = cart[index];
-  var query = "INSERT INTO LineItems" +
-        "(productname, oid, quantity, price) " + 
-         "VALUES ('"
-          + item.productname + "', '"
-          + oid.oid + "', '" 
-          + item.quantity + "', '" 
-          + item.price + "');";
+getCart = function(uid, done){
+  var query = 'SELECT p.name AS product_name, p.sku, o.price, o.quantity, c.name AS category_name ' +
+              'FROM orders o' +
+              ' LEFT JOIN products p ON (o.product_id = p.id)' + 
+              ' LEFT JOIN categories c ON (p.category_id = c.id)' + 
+              ' WHERE o.user_id = ' + uid + 
+              ' AND o.is_cart = true;';
   db.any(query)
-      .then(function (data) {
-        console.log(data);
-        index++;
-        if (index == cart.length)
-          done(true)
-        else
-          addItemsToOrderRecurse(oid, cart, index, done);
-      })
-      .catch(function (error) {
-        console.log("hi");
-        console.log(error);
-        done(false);
-    });
+    .then(function (data) {
+      console.log(data);
+        done(data, true);
+    })
+    .catch(function (error) {
+      console.log(error);
+        done(null, false);
+  });
 }
 
 module.exports = {
@@ -390,7 +380,6 @@ module.exports = {
 	addCategory: addCategory,
 	updateCategory: updateCategory,
 	deleteCategory: deleteCategory,
-  addOrder: addOrder,
-  addItemsToOrder: addItemsToOrder
-
+  addToCart: addToCart,
+  getCart: getCart
 }

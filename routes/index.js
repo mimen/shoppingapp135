@@ -19,16 +19,17 @@ router.get('/signup', verifyLoggedOut, function(req, res, next) {
 });
 
 router.get('/signup/submit/', verifyLoggedOut, function(req, res, next){
-  db.addUser(req.query.username, req.query.type, req.query.age, req.query.state, function(success){
+  db.addUser(req.query.name, req.query.role, req.query.age, req.query.state, function(data, success){
     if (success){
       var user = {
-        username: req.query.username,
-        type: req.query.type,
+        name: req.query.name,
+        role: req.query.role,
         age: req.query.age,
-        state: req.query.state
+        state: req.query.state,
+        id: data[0].id
       }
       req.session.user = user;
-      res.render('success', {username:req.query.username});
+      res.render('success', {username:req.query.name});
     }
     else
       res.render('failure');
@@ -43,9 +44,10 @@ router.get('/login', verifyLoggedOut, function(req, res, next) {
 router.get('/login/submit/', function(req, res, next){
   db.getUser(req.query.username, function(user, success){
     if (!success)
-      res.render('login', {error:true, username:req.query.username});
+      res.render('login', {error:true, username:req.query.name});
     else
     {
+      console.log(user);
       req.session.user = user;
       res.redirect('/home');
     }
@@ -54,21 +56,21 @@ router.get('/login/submit/', function(req, res, next){
 
 /* GET home page. */
 router.get('/home', verifyLoggedIn, function(req, res, next) {
-  var username = req.session.user.username;
-  var isOwner = req.session.user.type.trim() == "owner";
+  var username = req.session.user.name;
+  var isOwner = req.session.user.role.trim() == "owner";
   res.render('home', {isOwner:isOwner, username:username});
 });
 
 /* GET categories page. */
 router.get('/categories', verifyLoggedIn, function(req, res, next) {
-    var username = req.session.user.username;
-    var isOwner = req.session.user.type.trim() == "owner";
+    var username = req.session.user.name;
+    var isOwner = req.session.user.role.trim() == "owner";
     res.render('categories', {isOwner:isOwner, username:username});
 });
 
 router.get('/categories/submit/', verifyLoggedIn, function(req, res, next){
-  var username = req.session.user.username;
-  var isOwner = req.session.user.type.trim() == "owner";
+  var username = req.session.user.name;
+  var isOwner = req.session.user.role.trim() == "owner";
   db.addCategory(req.query.name, req.query.description, function(success){
     if (!success){
       res.render('categories', {error:true, isOwner:isOwner, username:username});
@@ -80,21 +82,21 @@ router.get('/categories/submit/', verifyLoggedIn, function(req, res, next){
 
 /* GET products page. */
 router.get('/products', verifyLoggedIn, function(req, res, next) {
-  var username = req.session.user.username;
-  var isOwner = req.session.user.type.trim() == "owner";
+  var username = req.session.user.name;
+  var isOwner = req.session.user.role.trim() == "owner";
   res.render('products', {isOwner:isOwner, username:username});
 });
 
 /* GET products_browsing page. */
 router.get('/productsbrowsing', verifyLoggedIn, function(req, res, next) {
-  var username = req.session.user.username;
-  var isOwner = req.session.user.type.trim() == "owner";
+  var username = req.session.user.name;
+  var isOwner = req.session.user.role.trim() == "owner";
   res.render('productsbrowsing', {username:username, isOwner:isOwner});
 });
 
 /* GET product_order page. */
 router.get('/productorder/:pid', verifyLoggedIn, function(req, res, next) {
-  var username = req.session.user.username;
+  var username = req.session.user.name;
   db.getProduct(req.params.pid, function(product, success){
     if (success){
       console.log(product);
@@ -107,8 +109,8 @@ router.get('/productorder/:pid', verifyLoggedIn, function(req, res, next) {
 
 /* GET buy_shopping_cart page. */
 router.get('/buyshoppingcart', verifyLoggedIn, function(req, res, next) {
-  var username = req.session.user.username;
-  var isOwner = req.session.user.type.trim() == "owner";
+  var username = req.session.user.name;
+  var isOwner = req.session.user.role.trim() == "owner";
   res.render('buyshoppingcart', {username:username, isOwner:isOwner});
 });
 
@@ -116,7 +118,7 @@ router.get('/buyshoppingcart', verifyLoggedIn, function(req, res, next) {
 router.get('/confirmation', verifyLoggedIn, function(req, res, next) {
   var order = req.session.cart;
   req.session.cart = [];
-  var username = req.session.user.username;
+  var username = req.session.user.name;
   res.render('confirmation', {order: order, total: req.session.total});
 });
 
