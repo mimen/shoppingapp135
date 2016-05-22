@@ -3,7 +3,8 @@
 	<a role="button" class="col-sm-offset-0 btn btn-danger" href="/logout/">Logout</a>
 </div>
 
-<h1>Product Order</h1>
+
+<h1>Analytics</h1>
 
 <a class="btn btn-default col-sm-offset-0" role="button" href = "../home/">Home</a>
 {{#if isOwner}}
@@ -14,15 +15,20 @@
 <a class="btn btn-default col-sm-offset-0" role="button" href = "/productsbrowsing/">Products Browsing</a>
 <a class="btn btn-default col-sm-offset-0" role="button" href = "/buyshoppingcart/">Buy Shopping Cart</a>
 
-<br><br>
 
-<div ng-app="ProductOrder">
-	<productorder></productorder>
-</div>
+{{#if isOwner}}
+
+
+
+
+
+{{else}}
+	<h2>This page is available to owners only.</h2>
+{{/if}}
+
 
 <script type="text/javascript">
 	var loggedinuser = {{{json username}}};
-	var product = {{{json product}}};
 </script>
 
-<script src="../js/productorder.js"></script>
+<script src="../js/analytics.js"></script>

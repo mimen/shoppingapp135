@@ -54,6 +54,12 @@ router.get('/login/submit/', function(req, res, next){
   });
 });
 
+router.get('/analytics', verifyLoggedIn, function(req, res, next){
+  var username = req.session.user.name;
+  var isOwner = req.session.user.role.trim() == "owner";
+  res.render('analytics', {isOwner:isOwner, username:username});
+})
+
 /* GET home page. */
 router.get('/home', verifyLoggedIn, function(req, res, next) {
   var username = req.session.user.name;
