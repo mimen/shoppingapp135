@@ -139,7 +139,7 @@ router.delete('/products/:pid', function(req, res, next) {
 router.get('/cart/', function(req, res, next) {
 
 	var uid = req.session.user.id;
-	
+
 	db.getCart(uid, function(cart, success){
 		if (success)
 			res.json(cart);
@@ -165,36 +165,14 @@ router.post('/cart/add/', function(req, res, next) {
 
 })
 
-router.post('/cart/checkout/', function(req, res, next) {
+router.get('/cart/checkout/', function(req, res, next) {
 
 	console.log("Checkout request");
+	var uid = req.session.user.id;
 
-	if (!req.session.cart)
-		res.json({"error":"error"});
-
-	console.log(req.body);
-
-	var date = "1234";
-	var username = req.body.username.trim();
-	var total = req.body.total;
-	var ccn = req.body.ccn;
-	var cart = req.body.cart;
-
-	req.session.total = req.body.total;
-
-	db.addOrder(date, username, ccn, total, function(oid, success){
+	db.checkoutCart(uid, function(success){
 		if (success){
-			console.log("Order added");
-			db.addItemsToOrder(oid, cart, function(success){
-				if (success){
-					console.log("Added items");
-					res.json({"success":"success"});
-				}
-				else{
-					res.json({"error":"error"});
-				}
-
-			})
+			res.json({"success":"success"});
 		}
 		else {
 			res.json({"error":"error"});

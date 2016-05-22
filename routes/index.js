@@ -119,7 +119,7 @@ router.get('/confirmation', verifyLoggedIn, function(req, res, next) {
   var order = req.session.cart;
   req.session.cart = [];
   var username = req.session.user.name;
-  res.render('confirmation', {order: order, total: req.session.total});
+  res.render('confirmation', {order: order, total: req.query.total});
 });
 
 router.get('/logout/', function(req, res, next){

@@ -6,15 +6,16 @@
 <br>
 
 
-<div ng-app="Confirmation">
-	<confirmation></confirmation>
+<div class="row">
+	<div class="form-group" id = "form_products_right">
+		<h3>Your Purchase</h3>
+		Total: ${{total}}
+	</div>
 </div>
-
 
 <script type="text/javascript">
 	var mycart = {{{json order}}};
-	var mytotal = {{{json total}}};
+	var total = {{{json total}}};
+	console.log(total);
 </script>
 
-
-<script src="../js/confirmation.js"></script>

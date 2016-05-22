@@ -365,6 +365,21 @@ getCart = function(uid, done){
   });
 }
 
+checkoutCart = function(uid, done){
+  var query = 'UPDATE orders ' +
+              'SET is_cart = false ' +
+              'WHERE user_id = ' + uid + ';';
+  db.any(query)
+    .then(function (data) {
+      console.log(data);
+        done(true);
+    })
+    .catch(function (error) {
+      console.log(error);
+        done(false);
+  });
+}
+
 module.exports = {
 	instance: db,
 	initialize: initializeTables,
@@ -381,5 +396,6 @@ module.exports = {
 	updateCategory: updateCategory,
 	deleteCategory: deleteCategory,
   addToCart: addToCart,
-  getCart: getCart
+  getCart: getCart,
+  checkoutCart: checkoutCart
 }

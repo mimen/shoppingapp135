@@ -1,5 +1,3 @@
-console.log("it works");
-
 
 console.log($('#button1'));
 $(".role").click(function(){

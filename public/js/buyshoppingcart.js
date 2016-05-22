@@ -53,17 +53,8 @@ app.directive("buyshoppingcart", [function (){
             }
 
             ctlr.buyCart = function(){
-                var ccn = $('#cc_number').val();
-                var body = {
-                    username: loggedinuser,
-                    total: ctlr.total,
-                    ccn: ccn,
-                    cart: ctlr.cart
-                }
-                console.log("Buying cart...");
-                console.log(body);
                 var url = 'http://localhost:3000/api/cart/checkout/';
-                $http.post(url, body).then(function(response){
+                $http.get(url).then(function(response){
                         console.log(response);
                         if (response.data.error){
                             console.log("failed");
