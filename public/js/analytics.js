@@ -135,18 +135,6 @@ app.directive("analytics", [function (){
                 if (ctlr.x_offset + 9 >= ctlr.cols){
                     $('#incCols').hide();
                 }
-
-                /*
-                if (ctlr.cols > 10)
-                    ctlr.x_string = "Showing columns 1 - 10";
-                else
-                    ctlr.x_string = "Showing columns 1 - " + ctlr.cols;
-
-                if (ctlr.rows > 20)
-                    ctlr.y_string = "Showing rows 1 - 20";
-                else
-                    ctlr.y_string = "Showing rows 1 - " + ctlr.rows;
-                */
             }
 
             ctlr.incColumns = function(){

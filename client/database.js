@@ -7,99 +7,6 @@ var options = {};
 var pgp = require('pg-promise')(options);
 var db = pgp(config.postgres_url);
 
-/* EXAMPLE DB QUERY
-  req.db.any("select * from users")
-    .then(function (data) {
-        console.log(data);
-    })
-    .catch(function (error) {
-       console.log(error);
-    });
-*/
-
-initializeTables = function(){
-
-	var query1 = "CREATE TABLE Users(" + 
-		"uid serial PRIMARY KEY," +
-		"username char(50) NOT NULL UNIQUE," +
-		"type char(8) NOT NULL," +
-		"age int NOT NULL CHECK (age > 0)," +
-		"state char(2) NOT NULL" +
-		");";
-
-	var query2 = "CREATE TABLE Categories(" + 
-		"cid serial PRIMARY KEY," +
-	    "categoryname char(50) NOT NULL UNIQUE," +
-	    "description char(50) NOT NULL," +
-	    "username char(50) REFERENCES Users(username)" +
-	    ");";
-
-	var query3 = "CREATE TABLE Products(" + 
-		"pid serial PRIMARY KEY," +
-	    "productname char(50) NOT NULL UNIQUE," +
-	    "categoryname char(50) REFERENCES Categories(categoryname)," +
-	    "SKU int NOT NULL UNIQUE CHECK (SKU > 0)," +
-	    "price int NOT NULL CHECK (price > 0)" +
-	    ");";
-
-	var query4 = "CREATE TABLE Orders(" +
-		"oid serial PRIMARY KEY," +
-		"date char(50) NOT NULL," +
-		"username char(50) REFERENCES Users(username)," +
-    "total int NOT NULL CHECK (total > 0)," + 
-    "ccn char(16) NOT NULL" + 
-		");";
-
-	var query5 = "CREATE TABLE LineItems(" + 
-    "lid serial PRIMARY KEY," +
-		"productname char(50) REFERENCES Products(productname)," +
-		"oid serial REFERENCES Orders(oid)," +
-		"quantity int NOT NULL CHECK (quantity > 0)," +
-		"price int NOT NULL CHECK (price > 0)" +
-		");";
-
-	db.any(query1)
-	    .then(function (data) {
-	        console.log(data);
-	    })
-	    .catch(function (error) {
-	       console.log(error);
-	    });
-
-  	db.any(query2)
-	    .then(function (data) {
-	        console.log(data);
-	    })
-	    .catch(function (error) {
-	       console.log(error);
-	    });
-
-  	db.any(query3)
-	    .then(function (data) {
-	        console.log(data);
-	    })
-	    .catch(function (error) {
-	       console.log(error);
-	    });
-
-  	db.any(query4)
-	    .then(function (data) {
-	        console.log(data);
-	    })
-	    .catch(function (error) {
-	       console.log(error);
-	    });
-  
-  	db.any(query5)
-	    .then(function (data) {
-	        console.log(data);
-	    })
-	    .catch(function (error) {
-	       console.log(error);
-	    });
-}
-
-
 addUser = function(name, role, age, state, done){
 	var query = "INSERT INTO users" +
 				 "(name, role, age, state) " + 
@@ -497,9 +404,48 @@ analyze = function(rows, order, category, done){
   });
 }
 
+getVectors = function(done){
+
+  console.log("hi");
+
+  var query1 = 'SELECT uid, pid, productname, COALESCE(spent, 0) as spent ' + 
+              'FROM ' + 
+                '(SELECT b.uid, b.pid, b.productname, a.spent ' + 
+                'FROM ' + 
+                  '(SELECT u.id as uid, o.product_id as pid, SUM(o.price * o.quantity) as spent ' + 
+                  'FROM users u, orders o ' + 
+                  'WHERE o.user_id = u.id ' + 
+                  'GROUP BY uid, pid ' + 
+                  'ORDER BY pid) a ' + 
+                'FULL OUTER JOIN ' + 
+                  '(SELECT u.id as uid, p.id as pid, p.name as productname ' + 
+                  'FROM users u, products p) b ' + 
+                'ON a.uid = b.uid ' + 
+                'AND a.pid = b.pid ' + 
+                'ORDER BY pid, uid) a ';
+
+  var query2 = 'SELECT COUNT(*) FROM users;';
+
+  db.any(query1)
+    .then(function (vectors) {
+        db.any(query2)
+          .then(function (numUsers) {
+              done(vectors, parseInt(numUsers[0].count), true);
+          })
+          .catch(function (error) {
+            console.log(error);
+              done(null, null, false);
+        });
+    })
+    .catch(function (error) {
+        console.log(error);
+        done(null, null, false);
+  });
+}
+
+
 module.exports = {
 	instance: db,
-	initialize: initializeTables,
 	addUser: addUser,
 	getUser: getUser,
 	addProduct: addProduct,
@@ -515,5 +461,6 @@ module.exports = {
   addToCart: addToCart,
   getCart: getCart,
   checkoutCart: checkoutCart,
-  analyze: analyze
+  analyze: analyze,
+  getVectors: getVectors
 }

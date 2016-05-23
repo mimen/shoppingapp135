@@ -103,7 +103,7 @@ router.get('/productsbrowsing', verifyLoggedIn, function(req, res, next) {
 /* GET product_order page. */
 router.get('/productorder/:pid', verifyLoggedIn, function(req, res, next) {
   var username = req.session.user.name;
-  var isOwner = req.session.user.type.trim() == "owner";
+  var isOwner = req.session.user.role.trim() == "owner";
   db.getProduct(req.params.pid, function(product, success){
     if (success){
       console.log(product);
@@ -126,7 +126,7 @@ router.get('/confirmation', verifyLoggedIn, function(req, res, next) {
   var order = req.session.cart;
   req.session.cart = [];
   var username = req.session.user.name;
-  var isOwner = req.session.user.type.trim() == "owner";
+  var isOwner = req.session.user.role.trim() == "owner";
   res.render('confirmation', {username:username, isOwner:isOwner, order: order, total: req.query.total});
 });
 
@@ -138,5 +138,86 @@ router.get('/logout/', function(req, res, next){
   res.redirect('/');
 
 });
+
+
+
+router.get('/similarproducts/', verifyLoggedIn, function(req, res, next){
+  var username = req.session.user.name;
+  var isOwner = req.session.user.role.trim() == "owner";
+  db.getVectors(function(data, numUsers, success){
+    if (success){
+      var vectors = createGroupedArray(data, numUsers);
+      computeCosineSimilarities(vectors, numUsers, function(similarities){
+        res.render('similarproducts', {username:username, isOwner:isOwner, similarities: similarities});
+      })
+    }
+    else {
+      res.json({"error":"error"});
+    }
+  });
+})
+
+var createGroupedArray = function(arr, chunkSize) {
+    var groups = [], i;
+    for (i = 0; i < arr.length; i += chunkSize) {
+        groups.push(arr.slice(i, i + chunkSize));
+    }
+    return groups;
+}
+
+var computeCosineSimilarities = function(vectors, count, done){
+
+  var similarities = [];
+
+  for (var i = 0; i < count; i++){
+    for (var j = i; j < count; j++){
+      if (i !== j){
+        var sim = cosineSimilarity(vectors[i], vectors[j]);
+        var obj = {
+          a: vectors[i][0].productname,
+          b: vectors[j][0].productname,
+          similarity: sim
+        }
+        similarities.push(obj);
+      }
+    }
+  }
+
+  var sorted = similarities.sort(compare).slice(0, 100);
+
+  done(sorted);
+
+}
+
+var dotProduct = function(vecA, vecB) {
+  var product = 0;
+  for (var i = 0; i < vecA.length; i++) {
+    product += vecA[i].spent * vecB[i].spent;
+  }
+  return product;
+}
+
+var magnitude = function(vec) {
+
+  var sum = 0;
+  for (var i = 0; i < vec.length; i++) {
+    sum += vec[i].spent * vec[i].spent;
+  }
+  return Math.sqrt(sum);
+}
+
+var cosineSimilarity = function(vecA, vecB) {
+  return dotProduct(vecA, vecB) / (magnitude(vecA) * magnitude(vecB));
+}
+
+var compare = function(a,b) {
+  if (a.similarity > b.similarity)
+    return -1;
+  else if (a.similarity < b.similarity)
+    return 1;
+  else 
+    return 0;
+}
+
 
 module.exports = router;
