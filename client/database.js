@@ -407,32 +407,30 @@ analyze = function(rows, order, category, done){
                 'ORDER BY username, productname) AS x)';
 
     query = 'SELECT e.username, e.userTotal, e.productname, e.totalprice, f.productTotal ' + 
-    'FROM ' +
-      '(SELECT x.username, userTotal, productname, totalprice ' +
-      'FROM ' +
-        '(SELECT username, SUM(totalprice) as userTotal ' +
-        'FROM ' + factor +
-          ' AS x ' +
-        'GROUP BY username) AS z ' +
-      'JOIN ' + factor + ' AS x ' +
-      'ON z.username = x.username ' +
-      'ORDER BY userTotal DESC) AS e ' +
-    'JOIN ' +
-      '(SELECT x.username, productTotal, z.productname, totalprice ' +
-      'FROM ' +
-        '(SELECT productname, SUM(totalprice) as productTotal ' +
-        'FROM ' + factor + 
-          ' AS y ' +
-        'GROUP BY productname) AS z ' +
-      'JOIN ' + factor + ' AS x ' +
-      'ON z.productname = x.productname ' +
-      'ORDER BY productTotal DESC) AS f ' +
-    'ON e.username = f.username ' +
-    'AND e.productname = f.productname ';
+            'FROM ' +
+              '(SELECT x.username, userTotal, productname, totalprice ' +
+              'FROM ' +
+                '(SELECT username, SUM(totalprice) as userTotal ' +
+                'FROM ' + factor + ' AS x ' +
+                'GROUP BY username) AS z ' +
+              'JOIN ' + factor + ' AS x ' +
+              'ON z.username = x.username ' +
+              'ORDER BY userTotal DESC) AS e ' +
+            'JOIN ' +
+              '(SELECT x.username, productTotal, z.productname, totalprice ' +
+              'FROM ' +
+                '(SELECT productname, SUM(totalprice) as productTotal ' +
+                'FROM ' + factor + ' AS y ' +
+                'GROUP BY productname) AS z ' +
+              'JOIN ' + factor + ' AS x ' +
+              'ON z.productname = x.productname ' +
+              'ORDER BY productTotal DESC) AS f ' +
+            'ON e.username = f.username ' +
+            'AND e.productname = f.productname ';
 
 
   if (order == 'top')
-    query+= 'ORDER BY e.usertotal DESC, f.producttotal DESC';
+    query+= 'ORDER BY e.usertotal DESC, e.username ASC, f.producttotal DESC,  e.productname ASC';
   else
     query+= 'ORDER BY e.username ASC, e.productname ASC';
 
@@ -442,7 +440,7 @@ analyze = function(rows, order, category, done){
     var factor = '(SELECT state, productname, coalesce(totalprice, 0) as totalprice FROM ' +
                 '(SELECT a.state, a.productname, b.totalprice ' +
                 'FROM ' +
-                '(SELECT u.state, p.name as productname ' +
+                '(SELECT DISTINCT u.state, p.name as productname ' +
                 'FROM users u, products p ';
     if (category != 'all') factor += ', categories c ' +
                 'WHERE p.category_id = c.id AND c.id = ' + category;
@@ -484,7 +482,7 @@ analyze = function(rows, order, category, done){
     'AND e.productname = f.productname ';
 
   if (order == 'top')
-    query+= 'ORDER BY e.usertotal DESC, f.producttotal DESC';
+    query+= 'ORDER BY e.usertotal DESC, e.state ASC, f.producttotal DESC, e.productname ASC';
   else
     query+= 'ORDER BY e.state ASC, e.productname ASC';
 
