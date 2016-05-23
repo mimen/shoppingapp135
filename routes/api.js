@@ -177,11 +177,22 @@ router.get('/cart/checkout/', function(req, res, next) {
 		else {
 			res.json({"error":"error"});
 		}
-
 	});
 
 })
 
+router.post('/analytics/', function(req, res, next){
+	console.log("start");
+	db.analyze(req.body.rows, req.body.order, req.body.category, function(data, success){
+		if (success){
+			console.log("done");
+			res.json(data);
+		}
+		else {
+			res.json({"error":"error"});
+		}
+	});
+})
 
 
 module.exports = router;

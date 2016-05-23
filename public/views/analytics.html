@@ -1,0 +1,37 @@
+
+<div>
+	<form class="form-horizontal" style="width:200px">
+		<fieldset class="form-group" >
+		    <label for="rows">Rows</label>
+		    <select class="form-control" id="rowsSelect" >
+			    <option value="customers">Customers</option>
+			    <option value="states">States</option>
+		    </select>
+	  	</fieldset>
+
+		<fieldset class="form-group">
+		    <label for="order">Order</label>
+		    <select class="form-control" id="orderSelect">
+			    <option value="alpha">Alphabetical</option>
+			    <option value="top">Top-K</option>
+		    </select>
+	  	</fieldset>
+
+		<fieldset class="form-group">
+		    <label for="order">Categories</label>
+		    <select class="form-control" id="categorySelect">
+			    <option value="all">All Categories</option>
+				<option ng-repeat="category in ctlr.categories" value="{{category.id}}">
+				   {{category.name}}
+				</option>
+		    </select>
+	  	</fieldset>
+		
+		<div ng-click="ctlr.runQuery()" class="btn btn-primary">Submit</div>
+
+	</form>
+</div>
+
+<div id="table">
+
+</div>
