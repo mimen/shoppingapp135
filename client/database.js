@@ -462,8 +462,7 @@ analyze = function(rows, order, category, done){
       '(SELECT x.state, userTotal, productname, totalprice ' +
       'FROM ' +
         '(SELECT state, SUM(totalprice) as userTotal ' +
-        'FROM ' + factor +
-          ' AS x ' +
+        'FROM ' + factor + ' AS x ' +
         'GROUP BY state) AS z ' +
       'JOIN ' + factor + ' AS x ' +
       'ON z.state = x.state ' +
@@ -472,8 +471,7 @@ analyze = function(rows, order, category, done){
       '(SELECT x.state, productTotal, z.productname, totalprice ' +
       'FROM ' +
         '(SELECT productname, SUM(totalprice) as productTotal ' +
-        'FROM ' + factor + 
-          ' AS y ' +
+        'FROM ' + factor + ' AS y ' +
         'GROUP BY productname) AS z ' +
       'JOIN ' + factor + ' AS x ' +
       'ON z.productname = x.productname ' +
@@ -487,6 +485,8 @@ analyze = function(rows, order, category, done){
     query+= 'ORDER BY e.state ASC, e.productname ASC';
 
   }
+
+  console.log(query);
 
   db.any(query)
     .then(function (data) {

@@ -85,3 +85,7 @@ a {
 table, th, td {
    border: 1px solid black;
 }
+
+.x {
+    display: none;
+}
