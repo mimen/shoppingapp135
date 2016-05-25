@@ -181,18 +181,28 @@ router.get('/cart/checkout/', function(req, res, next) {
 
 })
 
-router.post('/analytics/', function(req, res, next){
+router.get('/analytics/', function(req, res, next){
 	console.log("start");
-	db.analyze(req.body.rows, req.body.order, req.body.category, function(data, success){
+	db.analyze(req.query.rows, req.query.order, req.query.category, function(data, numProducts, success){
 		if (success){
+			console.log(numProducts);
 			console.log("done");
-			res.json(data);
+			res.json(createGroupedArray(data, numProducts));
 		}
 		else {
 			res.json({"error":"error"});
 		}
 	});
 })
+
+
+var createGroupedArray = function(arr, chunkSize) {
+    var groups = [], i;
+    for (i = 0; i < arr.length; i += chunkSize) {
+        groups.push(arr.slice(i, i + chunkSize));
+    }
+    return groups;
+}
 
 
 

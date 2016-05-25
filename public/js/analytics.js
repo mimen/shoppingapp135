@@ -26,8 +26,8 @@ app.directive("analytics", [function (){
         controller: ["httpLoader", '$http', function (httpLoader, $http) {
             var ctlr = this;
 
-            ctlr.x_offset = 1;
-            ctlr.y_offset = 1;
+            ctlr.x_offset = 0;
+            ctlr.y_offset = 0;
 
             ctlr.x_string = "";
             ctlr.y_string = "";
@@ -42,13 +42,14 @@ app.directive("analytics", [function (){
                     category: $('#categorySelect').val()
                 }
                 ctlr.type = body.rows;
-                var href = 'http://localhost:3000/api/analytics/';
+                var href = 'http://localhost:3000/api/analytics/?rows=' + body.rows + '&order=' + body.order + '&category=' + body.category;
+                console.log(href);
 
-                $http.post(href, body)
+                $http.get(href)
                     .success(function(data, status, headers, config){
-                        ctlr.length = data.length;
+                        ctlr.data = data;
                         ctlr.reset();
-                        ctlr.buildTable(data);
+                        ctlr.buildTable();
                     })
                     .error(function(data, status, headers, config){
                         console.log(status);
@@ -72,96 +73,86 @@ app.directive("analytics", [function (){
                 });
             }
 
-            ctlr.buildTable = function(data){
+            ctlr.buildTable = function(){
+
+                var data = ctlr.data;
 
                 var tablehead = "<table><thead><tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Products ><br>" + ctlr.type + " ∨ </td>";
                 var table = "</tr></thead><tbody>";
                 var tablefoot = "</tbody>"
-                var uname = "";
-                var pname = "";
-                ctlr.rows = 0;
-                ctlr.cols = 0;
-                while (data.length > 0){
-                    var next = data.shift();
-                    if (next.username != uname){
-                        ctlr.cols = 0;
-                        ctlr.rows++;
-                        uname = next.username;
-                        table += "</tr><tr class='row" + ctlr.rows + "'>";
-                        table += "<td><b>" + next.username + "(" + next.usertotal + ")</b></td>";
-                    }
-                    ctlr.cols++;
-                    if (ctlr.rows == 1){
-                        tablehead += "<td class='col" + ctlr.cols + "'><b>" + next.productname + "(" + next.producttotal + ")</b></td>";
-                    }
-                    table += "<td class='col" + ctlr.cols + "'>" + next.totalprice + "</td>"
+
+                ctlr.rows = data.length;
+                ctlr.cols = data[0].length;
+
+                if (ctlr.rows < 20) $('#incRows').hide();
+                if (ctlr.cols < 10) $('#incCols').hide();
+
+                for (var i = ctlr.x_offset; i < ctlr.x_offset + 10; i++){
+                    if (data && data[0] && data[0][i])
+                        tablehead += "<td><b>" + data[0][i].productname + "(" + data[0][i].producttotal + ")</b></td>";
+                    else
+                        break;
                 }
+
+                for (var i = ctlr.y_offset; i < ctlr.y_offset + 20; i++){
+                    var next = data[i];
+                    if (next){
+                        table += "</tr><tr>";
+                        table += "<td><b>" + next[0].username + "(" + next[0].usertotal + ")</b></td>";
+                        for (var j = ctlr.x_offset; j < ctlr.x_offset + 10; j++){
+                            if (next[j])
+                                table += "<td>" + next[j].totalprice + "</td>"
+                            else
+                                break;
+                        }
+                    } else {
+                        break;
+                    }
+                }
+
                 var complete = tablehead + table + tablefoot;
                 document.getElementById("table").innerHTML = complete;
-                ctlr.paginate();
-            }
-
-            ctlr.paginate = function(){
-                for (var i = 1; i <= ctlr.cols; i++){
-                    if (i >= ctlr.x_offset && i < ctlr.x_offset + 10){
-                        $('.col' + i).removeClass('x');
-                    }
-                    else {
-                        $('.col' + i).addClass('x'); 
-                    }
-                }
-                for (var j = 1; j <= ctlr.rows; j++){
-                    if (j >= ctlr.y_offset && j < ctlr.y_offset + 20){
-                        $('.row' + j).removeClass('x');
-                    }
-                    else {
-                        $('.row' + j).addClass('x'); 
-                    }
-                }
-
-                ctlr.x_string = "Showing columns " + ctlr.x_offset + " - ";
-                if (ctlr.x_offset + 9 > ctlr.cols)  ctlr.x_string += ctlr.cols;
-                else                                ctlr.x_string += (ctlr.x_offset + 9);
-                ctlr.x_string += " out of " + ctlr.cols + ".";
-                ctlr.y_string = "Showing rows " + ctlr.y_offset + " - ";
-                if (ctlr.y_offset + 19 > ctlr.rows) ctlr.y_string += ctlr.rows;
-                else                                ctlr.y_string += (ctlr.y_offset + 19);
-                ctlr.y_string += " out of " + ctlr.rows + ".";
-
-
-                if (ctlr.y_offset + 19 >= ctlr.rows){
-                    $('#incRows').hide();
-                }
-                if (ctlr.x_offset + 9 >= ctlr.cols){
-                    $('#incCols').hide();
-                }
+                ctlr.updateStrings();
             }
 
             ctlr.incColumns = function(){
                 ctlr.x_offset += 10;
-                if (ctlr.x_offset + 9 >= ctlr.cols){
+                if (ctlr.x_offset + 10 >= ctlr.cols){
                     $('#incCols').hide();
                 }
-                ctlr.paginate();
+                ctlr.buildTable();
             }
 
             ctlr.incRows = function(){
                 ctlr.y_offset += 20;
-                if (ctlr.y_offset + 19 >= ctlr.rows){
+                if (ctlr.y_offset + 20 >= ctlr.rows){
                     $('#incRows').hide();
                 }
-                ctlr.paginate();
+                ctlr.buildTable();
+            }
+
+            ctlr.updateStrings = function(){
+                ctlr.y_string = "Showing rows " + (ctlr.y_offset + 1) + " - ";
+                if (ctlr.y_offset + 20 > ctlr.rows) ctlr.y_string += ctlr.rows;
+                else                                ctlr.y_string += (ctlr.y_offset + 20);
+                ctlr.y_string += " out of " + ctlr.rows + ".";
+
+                ctlr.x_string = "Showing columns " + (ctlr.x_offset + 1) + " - ";
+                if (ctlr.x_offset + 10 > ctlr.cols)  ctlr.x_string += ctlr.cols;
+                else                                ctlr.x_string += (ctlr.x_offset + 10);
+                ctlr.x_string += " out of " + ctlr.cols + ".";
             }
 
             ctlr.reset = function(){
-
                 $('#incRows').show();
                 $('#incCols').show();
-                ctlr.x_offset = 1;
-                ctlr.y_offset = 1;
+                ctlr.x_offset = 0;
+                ctlr.y_offset = 0;
             }
 
             ctlr.loadCategories();
+            $('#incCols').hide();
+            $('#incRows').hide();
 
         }],
         controllerAs: "ctlr"

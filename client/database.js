@@ -293,7 +293,7 @@ analyze = function(rows, order, category, done){
 
   if (rows !== 'states'){
 
-    var factor = '(SELECT username, productname, coalesce(totalprice, 0) as totalprice FROM ' +
+    var factor = 'CREATE TEMPORARY TABLE temp AS (SELECT username, productname, coalesce(totalprice, 0) as totalprice FROM ' +
                 '(SELECT a.username, a.productname, b.totalprice ' +
                 'FROM ' +
                 '(SELECT u.name as username, p.name as productname ' +
@@ -311,25 +311,25 @@ analyze = function(rows, order, category, done){
     factor +=    'GROUP BY u.name, p.name) b ' +
                 'ON a.username = b.username ' +
                 'AND a.productname = b.productname ' +
-                'ORDER BY username, productname) AS x)';
+                'ORDER BY username, productname) a)';
 
     query = 'SELECT e.username, e.userTotal, e.productname, e.totalprice, f.productTotal ' + 
             'FROM ' +
               '(SELECT x.username, userTotal, productname, totalprice ' +
               'FROM ' +
                 '(SELECT username, SUM(totalprice) as userTotal ' +
-                'FROM ' + factor + ' AS x ' +
+                'FROM temp AS x ' +
                 'GROUP BY username) AS z ' +
-              'JOIN ' + factor + ' AS x ' +
+              'JOIN temp AS x ' +
               'ON z.username = x.username ' +
               'ORDER BY userTotal DESC) AS e ' +
             'JOIN ' +
               '(SELECT x.username, productTotal, z.productname, totalprice ' +
               'FROM ' +
                 '(SELECT productname, SUM(totalprice) as productTotal ' +
-                'FROM ' + factor + ' AS y ' +
+                'FROM temp AS y ' +
                 'GROUP BY productname) AS z ' +
-              'JOIN ' + factor + ' AS x ' +
+              'JOIN temp AS x ' +
               'ON z.productname = x.productname ' +
               'ORDER BY productTotal DESC) AS f ' +
             'ON e.username = f.username ' +
@@ -344,7 +344,7 @@ analyze = function(rows, order, category, done){
   }
   else {
 
-    var factor = '(SELECT state, productname, coalesce(totalprice, 0) as totalprice FROM ' +
+    var factor = 'CREATE TEMPORARY TABLE temp AS (SELECT state, productname, coalesce(totalprice, 0) as totalprice FROM ' +
                 '(SELECT a.state, a.productname, b.totalprice ' +
                 'FROM ' +
                 '(SELECT DISTINCT u.state, p.name as productname ' +
@@ -369,18 +369,18 @@ analyze = function(rows, order, category, done){
       '(SELECT x.state, userTotal, productname, totalprice ' +
       'FROM ' +
         '(SELECT state, SUM(totalprice) as userTotal ' +
-        'FROM ' + factor + ' AS x ' +
+        'FROM temp AS x ' +
         'GROUP BY state) AS z ' +
-      'JOIN ' + factor + ' AS x ' +
+      'JOIN temp AS x ' +
       'ON z.state = x.state ' +
       'ORDER BY userTotal DESC) AS e ' +
     'JOIN ' +
       '(SELECT x.state, productTotal, z.productname, totalprice ' +
       'FROM ' +
         '(SELECT productname, SUM(totalprice) as productTotal ' +
-        'FROM ' + factor + ' AS y ' +
+        'FROM temp AS y ' +
         'GROUP BY productname) AS z ' +
-      'JOIN ' + factor + ' AS x ' +
+      'JOIN temp AS x ' +
       'ON z.productname = x.productname ' +
       'ORDER BY productTotal DESC) AS f ' +
     'ON e.state = f.state ' +
@@ -393,14 +393,65 @@ analyze = function(rows, order, category, done){
 
   }
 
-  console.log(query);
 
-  db.any(query)
+
+
+  console.log(factor);
+  //console.log(query);
+
+  db.any('DROP TABLE temp')
     .then(function (data) {
-        done(data, true);
+  console.log("query 1");
+      console.log(data);
+        next(done, factor, category, query);
     })
     .catch(function (error) {
-        done(null, false);
+  console.log("query 1");
+      console.log(error);
+        next(done, factor, category, query);
+  });
+  
+}
+
+next = function(done, factor, category, query){
+
+  var productQuery = 'SELECT COUNT(*) FROM products';
+  if (category != 'all') productQuery += ' p, categories c WHERE p.category_id = c.id AND c.id = ' + category;
+
+  console.log("hi");
+  db.any(factor)
+    .then(function (data) {
+  console.log("query 2");
+      console.log(data.length);
+
+          console.log(query);
+            db.any(query)
+          .then(function (data) {
+        console.log("query 3");
+            console.log(data.length);
+
+              db.any(productQuery)
+                .then(function (numProducts) {
+                    done(data, parseInt(numProducts[0].count), true);
+                })
+                .catch(function (error) {
+                  console.log(error);
+                    done(null, null, false);
+              });
+          })
+          .catch(function (error) {
+        console.log("query 3");
+            console.log(error);
+              done(null, null, false);
+        });
+
+
+
+    })
+    .catch(function (error) {
+  console.log("query 2");
+      console.log(error);
+        done(null, null, false);
   });
 }
 

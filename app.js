@@ -11,6 +11,12 @@ var hbs = require('hbs');
     return JSON.stringify(context);
  });
 
+ hbs.registerHelper("inc", function(value, options)
+{
+    return parseInt(value) + 1;
+});
+
+
 // Routes
 var routes = require('./routes/index');
 var api = require('./routes/api');

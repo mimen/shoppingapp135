@@ -22,13 +22,15 @@
 {{#if isOwner}}
 <br><br>
 
-Top 100 Similar Products 
+Top 100 Similar Product Pairs 
 
 <table>
  <thead>
   <tr>
+     <th>Rank</th>
      <th>Product A</th>
      <th>Product B</th>
+     <th>Cosine Similarity</th>
   </tr>
  </thead>
  <tbody>
@@ -39,8 +41,10 @@ Top 100 Similar Products
 {{#each similarities}}
 	
   <tr>
+     <td>{{inc @index}}</td>
      <td>{{this.a}}</td>
      <td>{{this.b}}</td>
+     <td>{{this.similarity}}</td>
   </tr>
 
 
