@@ -395,9 +395,10 @@ analyze = function(rows, order, category, done){
 
 
 
-
+  console.log("factor: ");
   console.log(factor);
-  //console.log(query);
+  console.log("query: ");
+  console.log(query);
 
   db.any('DROP TABLE temp')
     .then(function (data) {
@@ -476,6 +477,11 @@ getVectors = function(done){
                 'ORDER BY pid, uid) a ';
 
   var query2 = 'SELECT COUNT(*) FROM users;';
+
+  console.log("query1: ");
+  console.log(query1);
+  console.log("query2: ");
+  console.log(query2);
 
   db.any(query1)
     .then(function (vectors) {

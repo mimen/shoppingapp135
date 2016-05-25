@@ -34,3 +34,13 @@ CREATE TABLE orders (
     price FLOAT NOT NULL CHECK (price >= 0),
     is_cart BOOLEAN NOT NULL
 );
+
+
+
+-- similar products indices
+CREATE INDEX index_products_name N products(name);
+CREATE INDEX index_orders_userid ON orders(user_id);
+
+-- analytics indices
+CREATE INDEX index_products_price ON products(price);
+
