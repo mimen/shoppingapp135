@@ -1,6 +1,7 @@
 
 <div>
 	<form class="form-horizontal" style="width:400px">
+		<!--
 		<fieldset class="form-group" >
 		    <label for="rows">Rows</label>
 		    <select class="form-control" id="rowsSelect" >
@@ -16,6 +17,7 @@
 			    <option value="top">Top-K</option>
 		    </select>
 	  	</fieldset>
+		-->
 
 		<fieldset class="form-group">
 		    <label for="order">Categories</label>
@@ -28,21 +30,32 @@
 	  	</fieldset>
 		
 		<div ng-click="ctlr.runQuery()" class="btn btn-primary">Run Query</div>
-		<br>
+		<br><br>
 
 
-		<div ng-click="ctlr.incColumns()" class="btn btn-primary" id="incCols">Next 10 Columns</div>
+		
+		<!--
+		<div ng-click="ctlr.incColumns()" class="btn btn-primary" id="incCols">Next 50 Columns (products) </div>
 		<br>
-		<div ng-click="ctlr.incRows()" class="btn btn-primary" id="incRows">Next 20 Rows</div>
+		<div ng-click="ctlr.incRows()" class="btn btn-primary" id="incRows">Next 50 Rows (states)</div>
 		<br>
 		<span>{{ctlr.x_string}}</span>
 		<br>
 		<span>{{ctlr.y_string}}</span>
-
+		-->
+		
 
 	</form>
 </div>
 
-<div id="table">
+<div style="position: relative; width: 6000px;">
+	<div ng-click="ctlr.runQuery()" class="btn btn-primary">Refresh</div>
+	<div ng-click="ctlr.runQuery()" style="position: absolute; right: 0;" class="btn btn-primary">Refresh</div>
 
+	<div id="table">
+
+	</div>
+
+	<div ng-click="ctlr.runQuery()" class="btn btn-primary">Refresh</div>
+	<div ng-click="ctlr.runQuery()" style="position: absolute; right: 0;" class="btn btn-primary">Refresh</div>
 </div>

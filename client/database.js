@@ -287,7 +287,7 @@ checkoutCart = function(uid, done){
   });
 }
 
-analyze = function(rows, order, category, done){
+/*analyze = function(rows, order, category, done){
 
   var query = "";
 
@@ -393,6 +393,74 @@ analyze = function(rows, order, category, done){
 
   }
 
+
+
+  console.log("factor: ");
+  console.log(factor);
+  console.log("query: ");
+  console.log(query);
+
+  db.any('DROP TABLE temp')
+    .then(function (data) {
+  console.log("query 1");
+      console.log(data);
+        next(done, factor, category, query);
+    })
+    .catch(function (error) {
+  console.log("query 1");
+      console.log(error);
+        next(done, factor, category, query);
+  });
+  
+}*/
+
+analyze = function(category, done){
+
+    var query = "";
+
+    var factor = 'CREATE TEMPORARY TABLE temp AS (SELECT state, productname, coalesce(totalprice, 0) as totalprice FROM ' +
+                '(SELECT a.state, a.productname, b.totalprice ' +
+                'FROM ' +
+                '(SELECT DISTINCT u.state, p.name as productname ' +
+                'FROM users u, products p ';
+    if (category != 'all') factor += ', categories c ' +
+                'WHERE p.category_id = c.id AND c.id = ' + category;
+    factor +=    ') a ' +
+                'FULL OUTER JOIN ' +
+                '(SELECT u.state, p.name as productname, SUM(o.quantity * o.price) as totalprice ' +
+                'FROM users u, orders o, products p ';
+    if (category != 'all') factor += ', categories c ';
+    factor +=    'WHERE u.id = o.user_id ' +
+                'AND p.id = o.product_id ';
+    if (category != 'all') factor += 'AND c.id = p.category_id AND c.id = ' + category + ' ';
+    factor +=    'GROUP BY u.state, p.name) b ' +
+                'ON a.state = b.state ' +
+                'AND a.productname = b.productname ' +
+                'ORDER BY state, productname) AS x)';
+
+    query = 'SELECT e.state as username, e.userTotal, e.productname, e.totalprice, f.productTotal ' + 
+    'FROM ' +
+      '(SELECT x.state, userTotal, productname, totalprice ' +
+      'FROM ' +
+        '(SELECT state, SUM(totalprice) as userTotal ' +
+        'FROM temp AS x ' +
+        'GROUP BY state) AS z ' +
+      'JOIN temp AS x ' +
+      'ON z.state = x.state ' +
+      'ORDER BY userTotal DESC) AS e ' +
+    'JOIN ' +
+      '(SELECT x.state, productTotal, z.productname, totalprice ' +
+      'FROM ' +
+        '(SELECT productname, SUM(totalprice) as productTotal ' +
+        'FROM temp AS y ' +
+        'GROUP BY productname) AS z ' +
+      'JOIN temp AS x ' +
+      'ON z.productname = x.productname ' +
+      'ORDER BY productTotal DESC) AS f ' +
+    'ON e.state = f.state ' +
+    'AND e.productname = f.productname ';
+
+    query+= 'ORDER BY e.usertotal DESC, e.state ASC, f.producttotal DESC, e.productname ASC';
 
 
   console.log("factor: ");

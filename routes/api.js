@@ -183,7 +183,7 @@ router.get('/cart/checkout/', function(req, res, next) {
 
 router.get('/analytics/', function(req, res, next){
 	console.log("start");
-	db.analyze(req.query.rows, req.query.order, req.query.category, function(data, numProducts, success){
+	db.analyze(req.query.category, function(data, numProducts, success){
 		if (success){
 			console.log(numProducts);
 			console.log("done");
