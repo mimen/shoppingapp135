@@ -44,8 +44,9 @@ CREATE TABLE orders (
 
 
 -- similar products indices
-CREATE INDEX index_products_name ON products(name);
+CREATE INDEX index_orders_productid ON orders(product_id);
 CREATE INDEX index_orders_userid ON orders(user_id);
+CREATE INDEX index_users_stateid ON users(state_id);
 
 -- analytics indices
 CREATE INDEX index_products_price ON products(price);

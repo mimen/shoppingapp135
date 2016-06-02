@@ -82,7 +82,7 @@ app.directive("analytics", [function (){
                 var tablefoot = "</tbody>"
 
                 ctlr.rows = data.length;
-                ctlr.cols = data[0].length;
+                if (data) ctlr.cols = data[0].length;
 
                 //if (ctlr.rows < 50) $('#incRows').hide();
                 //if (ctlr.cols < 50) $('#incCols').hide();
@@ -116,33 +116,23 @@ app.directive("analytics", [function (){
                 //ctlr.updateStrings();
             }
 
-            /*ctlr.incColumns = function(){
-                ctlr.x_offset += 50;
-                if (ctlr.x_offset + 50 >= ctlr.cols){
-                    $('#incCols').hide();
-                }
-                ctlr.buildTable();
+            ctlr.createOrders = function(){
+                var queries_num = $('#num_orders').val();
+                console.log(queries_num);
+                var href = 'http://localhost:3000/api/createOrders';
+                var body = {
+                    num_orders: queries_num
+                };
+                $http.post(href, body)
+                    .success(function(data, status, headers, config){
+                        console.log("success");
+                        alert(queries_num + " orders are inserted!");
+                        $('#num_orders').val("");
+                    })
+                    .error(function(data, status, headers, config){
+                        console.log("failed");
+                    });
             }
-
-            ctlr.incRows = function(){
-                ctlr.y_offset += 50;
-                if (ctlr.y_offset + 50 >= ctlr.rows){
-                    $('#incRows').hide();
-                }
-                ctlr.buildTable();
-            }
-
-            ctlr.updateStrings = function(){
-                ctlr.y_string = "Showing rows " + (ctlr.y_offset + 1) + " - ";
-                if (ctlr.y_offset + 50 > ctlr.rows) ctlr.y_string += ctlr.rows;
-                else                                ctlr.y_string += (ctlr.y_offset + 50);
-                ctlr.y_string += " out of " + ctlr.rows + ".";
-
-                ctlr.x_string = "Showing columns " + (ctlr.x_offset + 1) + " - ";
-                if (ctlr.x_offset + 50 > ctlr.cols)  ctlr.x_string += ctlr.cols;
-                else                                ctlr.x_string += (ctlr.x_offset + 50);
-                ctlr.x_string += " out of " + ctlr.cols + ".";
-            }*/
 
             ctlr.reset = function(){
                 //$('#incRows').show();

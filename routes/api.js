@@ -195,6 +195,18 @@ router.get('/analytics/', function(req, res, next){
 	});
 })
 
+router.post('/createOrders/', function(req, res, next){
+	console.log("received req");
+	db.createOrders(req.body.num_orders, function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else {
+			res.json({"error":"error"});
+		}
+	})
+})
+
 
 var createGroupedArray = function(arr, chunkSize) {
     var groups = [], i;

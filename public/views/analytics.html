@@ -1,23 +1,17 @@
 
 <div>
-	<form class="form-horizontal" style="width:400px">
-		<!--
-		<fieldset class="form-group" >
-		    <label for="rows">Rows</label>
-		    <select class="form-control" id="rowsSelect" >
-			    <option value="customers">Customers</option>
-			    <option value="states">States</option>
-		    </select>
+
+	<form>
+		<fieldset class="form-group" style="width:500px">
+    		<label for="order">How many orders?</label>
+			<input id="num_orders" class="form-control col-sm-offset-0" type="number" >
 	  	</fieldset>
 
-		<fieldset class="form-group">
-		    <label for="order">Order</label>
-		    <select class="form-control" id="orderSelect">
-			    <option value="alpha">Alphabetical</option>
-			    <option value="top">Top-K</option>
-		    </select>
-	  	</fieldset>
-		-->
+		<div ng-click="ctlr.createOrders()" class="btn btn-primary">Create Orders</div>
+	</form>
+	<br>
+
+	<form class="form-horizontal" style="width:400px">
 
 		<fieldset class="form-group">
 		    <label for="order">Categories</label>
@@ -31,19 +25,6 @@
 		
 		<div ng-click="ctlr.runQuery()" class="btn btn-primary">Run Query</div>
 		<br><br>
-
-
-		
-		<!--
-		<div ng-click="ctlr.incColumns()" class="btn btn-primary" id="incCols">Next 50 Columns (products) </div>
-		<br>
-		<div ng-click="ctlr.incRows()" class="btn btn-primary" id="incRows">Next 50 Rows (states)</div>
-		<br>
-		<span>{{ctlr.x_string}}</span>
-		<br>
-		<span>{{ctlr.y_string}}</span>
-		-->
-		
 
 	</form>
 </div>

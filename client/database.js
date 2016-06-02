@@ -288,139 +288,9 @@ checkoutCart = function(uid, done){
   });
 }
 
-/*analyze = function(rows, order, category, done){
-
-  var query = "";
-
-  if (rows !== 'states'){
-
-    var factor = 'CREATE TEMPORARY TABLE temp AS (SELECT username, productname, coalesce(totalprice, 0) as totalprice FROM ' +
-                '(SELECT a.username, a.productname, b.totalprice ' +
-                'FROM ' +
-                '(SELECT u.name as username, p.name as productname ' +
-                'FROM users u, products p ';
-    if (category != 'all') factor += ', categories c ' +
-                'WHERE p.category_id = c.id AND c.id = ' + category;
-    factor +=   ') a ' +
-                'FULL OUTER JOIN ' +
-                '(SELECT u.name as username, p.name as productname, SUM(o.quantity * o.price) as totalprice ' +
-                'FROM users u, orders o, products p ';
-    if (category != 'all') factor += ', categories c ';
-    factor +=    'WHERE u.id = o.user_id ' +
-                'AND p.id = o.product_id ';
-    if (category != 'all') factor += 'AND c.id = p.category_id AND c.id = ' + category + ' ';
-    factor +=    'GROUP BY u.name, p.name) b ' +
-                'ON a.username = b.username ' +
-                'AND a.productname = b.productname ' +
-                'ORDER BY username, productname) a)';
-
-    query = 'SELECT e.username, e.userTotal, e.productname, e.totalprice, f.productTotal ' + 
-            'FROM ' +
-              '(SELECT x.username, userTotal, productname, totalprice ' +
-              'FROM ' +
-                '(SELECT username, SUM(totalprice) as userTotal ' +
-                'FROM temp AS x ' +
-                'GROUP BY username) AS z ' +
-              'JOIN temp AS x ' +
-              'ON z.username = x.username ' +
-              'ORDER BY userTotal DESC) AS e ' +
-            'JOIN ' +
-              '(SELECT x.username, productTotal, z.productname, totalprice ' +
-              'FROM ' +
-                '(SELECT productname, SUM(totalprice) as productTotal ' +
-                'FROM temp AS y ' +
-                'GROUP BY productname) AS z ' +
-              'JOIN temp AS x ' +
-              'ON z.productname = x.productname ' +
-              'ORDER BY productTotal DESC) AS f ' +
-            'ON e.username = f.username ' +
-            'AND e.productname = f.productname ';
-
-
-  if (order == 'top')
-    query+= 'ORDER BY e.usertotal DESC, e.username ASC, f.producttotal DESC,  e.productname ASC';
-  else
-    query+= 'ORDER BY e.username ASC, e.productname ASC';
-
-  }
-  else {
-
-    var factor = 'CREATE TEMPORARY TABLE temp AS (SELECT state, productname, coalesce(totalprice, 0) as totalprice FROM ' +
-                '(SELECT a.state, a.productname, b.totalprice ' +
-                'FROM ' +
-                '(SELECT DISTINCT u.state, p.name as productname ' +
-                'FROM users u, products p ';
-    if (category != 'all') factor += ', categories c ' +
-                'WHERE p.category_id = c.id AND c.id = ' + category;
-    factor +=    ') a ' +
-                'FULL OUTER JOIN ' +
-                '(SELECT u.state, p.name as productname, SUM(o.quantity * o.price) as totalprice ' +
-                'FROM users u, orders o, products p ';
-    if (category != 'all') factor += ', categories c ';
-    factor +=    'WHERE u.id = o.user_id ' +
-                'AND p.id = o.product_id ';
-    if (category != 'all') factor += 'AND c.id = p.category_id AND c.id = ' + category + ' ';
-    factor +=    'GROUP BY u.state, p.name) b ' +
-                'ON a.state = b.state ' +
-                'AND a.productname = b.productname ' +
-                'ORDER BY state, productname) AS x)';
-
-    query = 'SELECT e.state as username, e.userTotal, e.productname, e.totalprice, f.productTotal ' + 
-    'FROM ' +
-      '(SELECT x.state, userTotal, productname, totalprice ' +
-      'FROM ' +
-        '(SELECT state, SUM(totalprice) as userTotal ' +
-        'FROM temp AS x ' +
-        'GROUP BY state) AS z ' +
-      'JOIN temp AS x ' +
-      'ON z.state = x.state ' +
-      'ORDER BY userTotal DESC) AS e ' +
-    'JOIN ' +
-      '(SELECT x.state, productTotal, z.productname, totalprice ' +
-      'FROM ' +
-        '(SELECT productname, SUM(totalprice) as productTotal ' +
-        'FROM temp AS y ' +
-        'GROUP BY productname) AS z ' +
-      'JOIN temp AS x ' +
-      'ON z.productname = x.productname ' +
-      'ORDER BY productTotal DESC) AS f ' +
-    'ON e.state = f.state ' +
-    'AND e.productname = f.productname ';
-
-  if (order == 'top')
-    query+= 'ORDER BY e.usertotal DESC, e.state ASC, f.producttotal DESC, e.productname ASC';
-  else
-    query+= 'ORDER BY e.state ASC, e.productname ASC';
-
-  }
-
-
-
-  console.log("factor: ");
-  console.log(factor);
-  console.log("query: ");
-  console.log(query);
-
-  db.any('DROP TABLE temp')
-    .then(function (data) {
-  console.log("query 1");
-      console.log(data);
-        next(done, factor, category, query);
-    })
-    .catch(function (error) {
-  console.log("query 1");
-      console.log(error);
-        next(done, factor, category, query);
-  });
-  
-}*/
-
 analyze = function(category, done){
 
-    var query = "";
-
-    var factor = 'CREATE TEMPORARY TABLE temp AS (SELECT state, productname, coalesce(totalprice, 0) as totalprice FROM ' +
-                '(SELECT a.state, a.productname, b.totalprice ' +
+    var factor = 'CREATE TEMPORARY TABLE analytics AS (SELECT a.state, a.productname, coalesce(b.totalprice, 0) as totalprice ' +
                 'FROM ' +
                 '(SELECT DISTINCT s.name as state, p.name as productname ' +
                 'FROM products p, states s ';
@@ -438,39 +308,37 @@ analyze = function(category, done){
     factor +=    'GROUP BY s.name, p.name) b ' +
                 'ON a.state = b.state ' +
                 'AND a.productname = b.productname ' +
-                'ORDER BY state, productname) AS x)';
+                'ORDER BY state, productname);';
 
-    query = 'SELECT e.state as username, e.userTotal, e.productname, e.totalprice, f.productTotal ' + 
+    var query = 'SELECT e.state as username, e.userTotal, e.productname, e.totalprice, f.productTotal ' + 
     'FROM ' +
       '(SELECT x.state, userTotal, productname, totalprice ' +
       'FROM ' +
         '(SELECT state, SUM(totalprice) as userTotal ' +
-        'FROM temp AS x ' +
+        'FROM analytics AS x ' +
         'GROUP BY state) AS z ' +
-      'JOIN temp AS x ' +
+      'JOIN analytics AS x ' +
       'ON z.state = x.state ' +
       'ORDER BY userTotal DESC) AS e ' +
     'JOIN ' +
       '(SELECT x.state, productTotal, z.productname, totalprice ' +
       'FROM ' +
         '(SELECT productname, SUM(totalprice) as productTotal ' +
-        'FROM temp AS y ' +
+        'FROM analytics AS y ' +
         'GROUP BY productname) AS z ' +
-      'JOIN temp AS x ' +
+      'JOIN analytics AS x ' +
       'ON z.productname = x.productname ' +
       'ORDER BY productTotal DESC) AS f ' +
     'ON e.state = f.state ' +
-    'AND e.productname = f.productname ';
-
-    query+= 'ORDER BY e.usertotal DESC, e.state ASC, f.producttotal DESC, e.productname ASC';
-
+    'AND e.productname = f.productname ' + 
+    'ORDER BY e.usertotal DESC, e.state ASC, f.producttotal DESC, e.productname ASC;';
 
   console.log("factor: ");
   console.log(factor);
   console.log("query: ");
   console.log(query);
 
-  db.any('DROP TABLE temp')
+  db.any('DROP TABLE analytics')
     .then(function (data) {
   console.log("query 1");
       console.log(data);
@@ -570,6 +438,53 @@ getVectors = function(done){
   });
 }
 
+//TODO: make sure this works
+createOrders = function(num_orders, done){
+
+  db.any("SELECT count(*) FROM orders")
+    .then( function (old_total) {
+      console.log(num_orders);
+
+      var random_num = Math.random() * 30 + 1;
+      if (num_orders < random_num) random_num = num_orders;
+
+      var query = "SELECT proc_insert_orders(" + parseInt(num_orders) + "," + parseInt(random_num) + ")";
+
+      db.any(query)
+        .then( function (data) {
+
+          var query2 = "INSERT INTO new_orders" +
+                        "(user_id, product_id, quantity, price, is_cart)" +
+                        "(SELECT * FROM orders WHERE id > " + old_total + ")";
+          db.any(query2)
+            .then( function (data) {
+              console.log(data);
+              done(true);
+            })
+            .catch(function (error) {
+              console.log(error);
+              done(false);
+          });
+
+        })
+        .catch(function (error) {
+          console.log(error);
+          done(false);
+      });
+
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(false);
+  });
+
+
+
+  
+
+
+}
+
 
 module.exports = {
 	instance: db,
@@ -589,5 +504,6 @@ module.exports = {
   getCart: getCart,
   checkoutCart: checkoutCart,
   analyze: analyze,
-  getVectors: getVectors
+  getVectors: getVectors,
+  createOrders: createOrders
 }
