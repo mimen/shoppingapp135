@@ -436,22 +436,22 @@ precompute = function(done){
 
               'CREATE TABLE analytics( ' + 
               '  id          SERIAL PRIMARY KEY, ' + 
-              '  state       TEXT NOT NULL, ' + 
-              '  product     TEXT NOT NULL, ' + 
+              '  state_id    INTEGER REFERENCES states (id) NOT NULL, ' + 
+              '  product_id  INTEGER REFERENCES products (id) NOT NULL, ' +
               '  total       FLOAT NOT NULL ' + 
               '); ' + 
 
-              'INSERT INTO analytics(state, product, total) ' + 
-              '(SELECT s.name, p.name, COALESCE(SUM(o.price*o.quantity), 0) AS total ' + 
+              'INSERT INTO analytics(state_id, product_id, total) ' + 
+              '(SELECT s.id, p.id, COALESCE(SUM(o.price*o.quantity), 0) AS total ' + 
               'FROM states s ' + 
               'CROSS JOIN products p ' + 
               'LEFT OUTER JOIN users u ON u.state_id = s.id ' + 
               'LEFT OUTER JOIN orders o ON o.product_id = p.id AND o.user_id = u.id ' + 
-              'GROUP BY s.name, p.name ' + 
-              'ORDER BY s.name); ' + 
+              'GROUP BY s.id, p.id ' + 
+              'ORDER BY s.id); ' + 
 
-              'CREATE INDEX index_product ON analytics(product); ' + 
-              'CREATE INDEX index_state ON analytics(state); ';
+              'CREATE INDEX index_product ON analytics(product_id); ' + 
+              'CREATE INDEX index_state ON analytics(state_id); ';
 
   console.log(query);
 
@@ -600,15 +600,29 @@ createOrders = function(num_orders, done){
 
 }
 
-getHeaders = function(category_id, done){
-  var query1 = "SELECT * FROM product_headers " +
-               "WHERE category_id = " + category_id + " " + 
-               "ORDER BY total DESC " + 
-               "LIMIT 50;";
+getHeaders = function(category, done){
 
-  var query2 = "SELECT * FROM state_headers " +
-               "WHERE category_id = " + category_id + " " + 
-               "ORDER BY total DESC;";
+  if (category != 'all'){
+    var query1 = "SELECT * FROM product_headers " +
+                 "WHERE category_id = " + category + " " + 
+                 "ORDER BY total DESC " + 
+                 "LIMIT 50;";
+
+    var query2 = "SELECT * FROM state_headers " +
+                 "WHERE category_id = " + category + " " + 
+                 "ORDER BY total DESC;";
+  }
+  else {
+    var query1 = "SELECT product, product_id, SUM(total) as total FROM product_headers " +
+                 "GROUP BY product, product_id " + 
+                 "ORDER BY total DESC " + 
+                 "LIMIT 50;";
+
+    var query2 = "SELECT state, state_id, SUM(total) as total FROM state_headers " +
+                 "GROUP BY state, state_id " + 
+                 "ORDER BY total DESC;";
+  }
+  
 
   db.any(query1)
     .then(function (product_headers) {
@@ -627,6 +641,22 @@ getHeaders = function(category_id, done){
     .catch(function (error) {
       console.log(error);
       done(null, null, false);
+  });
+
+}
+
+getCell = function(product_id, state_id, done){
+  var query = "SELECT * FROM analytics " +
+              "WHERE state_id = " + state_id + " " + 
+              "AND product_id = " + product_id;
+
+  db.any(query)
+    .then(function (result) {
+      done(result, true);
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(null, false);
   });
 
 }
@@ -654,5 +684,6 @@ module.exports = {
   createOrders: createOrders,
   precompute: precompute,
   update: update,
-  getHeaders: getHeaders
+  getHeaders: getHeaders,
+  getCell: getCell
 }

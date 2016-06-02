@@ -244,6 +244,15 @@ router.get('/headers/', function(req, res, next){
 	})
 })
 
+router.get('/cell/', function(req, res, next){
+	db.getCell(req.query.product, req.query.state, function(result, success){
+		if (success)
+			res.json(result);
+		else
+			res.json({"error":"error"});
+	})
+})
+
 
 var createGroupedArray = function(arr, chunkSize) {
     var groups = [], i;
