@@ -232,11 +232,21 @@ router.post('/createOrders/', function(req, res, next){
 router.get('/headers/', function(req, res, next){
 	db.getHeaders(req.query.category, function(product_headers, state_headers, success){
 		if (success){
+			console.log("got headers");
 			var body = {
-				product_headers: product_headers,
-				state_headers: state_headers
+				products: product_headers,
+				states: state_headers
 			}
-			res.json(body);
+
+			var cells = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], 
+						 [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], 
+						 [], [], [], [], [], [], [], [], [], []];
+
+			getCells(cells, 0, 0, body, function(cells){
+				body.cells = cells;
+				res.json(body);
+			});
+
 		}
 		else {
 			res.json({"error":"error"});
@@ -244,10 +254,32 @@ router.get('/headers/', function(req, res, next){
 	})
 })
 
+var getCells = function(cells, p, s, body, done){
+	if (p == body.products.length && s == body.states.length) 
+        done(cells);
+    else {
+
+        if (p == body.products.length) p = 0;
+        if (s == body.states.length) s = 0;
+
+        var state = body.states[s]; 
+        var product = body.products[p]; 
+
+        db.getCell(product.product_id, state.state_id, function(result, success){
+        	if (success){
+        		cells[s].push(result[0]);
+        		p++;
+                if (p == body.products.length) s++;
+                getCells(cells, p, s, body, done);
+        	}
+        })
+    }
+}
+
 router.get('/cell/', function(req, res, next){
 	db.getCell(req.query.product, req.query.state, function(result, success){
 		if (success)
-			res.json(result);
+			res.json(result[0]);
 		else
 			res.json({"error":"error"});
 	})

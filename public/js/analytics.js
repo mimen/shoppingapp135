@@ -26,38 +26,9 @@ app.directive("analytics", [function (){
         controller: ["httpLoader", '$http', function (httpLoader, $http) {
             var ctlr = this;
 
-            ctlr.x_offset = 0;
-            ctlr.y_offset = 0;
-
-            ctlr.x_string = "";
-            ctlr.y_string = "";
-
-            ctlr.cols = 0;
-            ctlr.rows = 0;
-
             ctlr.runQuery = function(){
-                var body = {
-                    //rows: $('#rowsSelect').val(),
-                    //order: $('#orderSelect').val(),
-                    category: $('#categorySelect').val()
-                }
-                //ctlr.type = body.rows;
-                var href = 'http://localhost:3000/api/analytics/?category=' + body.category;
-                console.log(href);
-
-                $http.get(href)
-                    .success(function(data, status, headers, config){
-                        ctlr.data = data;
-                        ctlr.reset();
-                        ctlr.buildTable();
-                    })
-                    .error(function(data, status, headers, config){
-                        console.log(status);
-                        var err = new Error(data);
-                        err.code = status;
-                        console.log(err);
-                    });
-
+                var category = $('#categorySelect').val();
+                ctlr.getData(category);
             }
 
             // Populate the list of categories
@@ -75,60 +46,43 @@ app.directive("analytics", [function (){
 
             ctlr.buildTable = function(){
 
-                var data = ctlr.data;
-
-                var tablehead = "<table><thead><tr><td> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Products ><br>States ∨ </td>";
+                var tablehead = "<table><thead><tr><td> &nbsp;&nbsp;&nbsp; Products ><br>States ∨ </td>";
                 var table = "</tr></thead><tbody>";
                 var tablefoot = "</tbody>"
-
-                ctlr.rows = data.length;
-                if (data) ctlr.cols = data[0].length;
-
 
                 ctlr.width = 0;
                 if (ctlr.cols < 50) ctlr.width = (ctlr.cols + 1) * 100;
                 else ctlr.width = 5100;
                 
-                //if (ctlr.rows < 50) $('#incRows').hide();
-                //if (ctlr.cols < 50) $('#incCols').hide();
 
-                for (var i = ctlr.x_offset; i < ctlr.x_offset + 50; i++){
-                    if (data && data[0] && data[0][i])
-                        tablehead += "<td><b>" + data[0][i].productname + "(" + data[0][i].producttotal + ")</b></td>";
-                    else
-                        break;
+                for (var i = 0; i < ctlr.products.length; i++){
+                    var product = ctlr.products[i];
+                    tablehead += "<td><b>" + product.product + " ($" + product.total + ")</b></td>";
                 }
 
-                for (var i = ctlr.y_offset; i < ctlr.y_offset + 50; i++){
-                    var next = data[i];
-                    if (next){
+                for (var i = 0; i < ctlr.states.length; i++){
+                    var state = ctlr.states[i];
+                    if (ctlr.products.length > 0){
                         table += "</tr><tr>";
-                        table += "<td><b>" + next[0].username + "(" + next[0].usertotal + ")</b></td>";
-                        for (var j = ctlr.x_offset; j < ctlr.x_offset + 50; j++){
-                            if (next[j])
-                                table += "<td>" + next[j].totalprice + "</td>"
-                            else
-                                break;
+                        table += "<td><b>" + state.state + " ($" + state.total + ")</b></td>";
+
+                        for (var j = 0; j < ctlr.products.length; j++){
+                            table += "<td>" + ctlr.cells[j][i].total + "</td>";
                         }
-                    } else {
-                        break;
+
                     }
                 }
 
-
                 var complete = tablehead + table + tablefoot;
                 document.getElementById("table").innerHTML = complete;
-                //ctlr.updateStrings();
+                
             }
 
             ctlr.createOrders = function(){
                 var queries_num = $('#num_orders').val();
                 console.log(queries_num);
                 var href = 'http://localhost:3000/api/createOrders';
-                var body = {
-                    num_orders: queries_num
-                };
-                $http.post(href, body)
+                $http.post(href, { num_orders: queries_num })
                     .success(function(data, status, headers, config){
                         console.log("success");
                         alert(queries_num + " orders are inserted!");
@@ -139,16 +93,25 @@ app.directive("analytics", [function (){
                     });
             }
 
-            ctlr.reset = function(){
-                //$('#incRows').show();
-                //$('#incCols').show();
-                ctlr.x_offset = 0;
-                ctlr.y_offset = 0;
+            ctlr.getData = function(category_id){
+                var href = 'http://localhost:3000/api/headers?category=' + category_id;
+                $http.get(href)
+                    .success(function(data, status, headers, config){
+                        console.log("success");
+                        ctlr.cols = data.products.length;
+                        ctlr.products = data.products;
+                        ctlr.states = data.states;
+                        ctlr.cells = data.cells;
+                        ctlr.buildTable();
+                        console.log(data);
+                    })
+                    .error(function(data, status, headers, config){
+                        console.log("failed");
+                    });
             }
 
             ctlr.loadCategories();
-            //$('#incCols').hide();
-            //$('#incRows').hide();
+            ctlr.getData('all');
 
         }],
         controllerAs: "ctlr"
