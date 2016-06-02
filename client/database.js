@@ -8,8 +8,9 @@ var pgp = require('pg-promise')(options);
 var db = pgp(config.postgres_url);
 
 addUser = function(name, role, age, state, done){
+  state = 5;
 	var query = "INSERT INTO users" +
-				 "(name, role, age, state) " + 
+				 "(name, role, age, state_id) " + 
 				 "VALUES ('"
 				 	+ name + "', '"
 				 	+ role + "', '" 
@@ -421,19 +422,20 @@ analyze = function(category, done){
     var factor = 'CREATE TEMPORARY TABLE temp AS (SELECT state, productname, coalesce(totalprice, 0) as totalprice FROM ' +
                 '(SELECT a.state, a.productname, b.totalprice ' +
                 'FROM ' +
-                '(SELECT DISTINCT u.state, p.name as productname ' +
-                'FROM users u, products p ';
-    if (category != 'all') factor += ', categories c ' +
+                '(SELECT DISTINCT s.name as state, p.name as productname ' +
+                'FROM products p, states s ';
+    if (category != 'all') factor += ', categories c ' + 
                 'WHERE p.category_id = c.id AND c.id = ' + category;
     factor +=    ') a ' +
                 'FULL OUTER JOIN ' +
-                '(SELECT u.state, p.name as productname, SUM(o.quantity * o.price) as totalprice ' +
-                'FROM users u, orders o, products p ';
+                '(SELECT s.name as state, p.name as productname, SUM(o.quantity * o.price) as totalprice ' +
+                'FROM users u, orders o, states s, products p ';
     if (category != 'all') factor += ', categories c ';
     factor +=    'WHERE u.id = o.user_id ' +
+                'AND s.id = u.state_id ' +
                 'AND p.id = o.product_id ';
     if (category != 'all') factor += 'AND c.id = p.category_id AND c.id = ' + category + ' ';
-    factor +=    'GROUP BY u.state, p.name) b ' +
+    factor +=    'GROUP BY s.name, p.name) b ' +
                 'ON a.state = b.state ' +
                 'AND a.productname = b.productname ' +
                 'ORDER BY state, productname) AS x)';

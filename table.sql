@@ -1,14 +1,20 @@
+DROP TABLE IF EXISTS states CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS categories CASCADE;
 DROP TABLE IF EXISTS products CASCADE;
 DROP TABLE IF EXISTS orders CASCADE;
+
+CREATE TABLE states (
+    id    SERIAL PRIMARY KEY,
+    name  TEXT NOT NULL UNIQUE
+);
 
 CREATE TABLE users (
     id    SERIAL PRIMARY KEY,
     name  char(50) NOT NULL UNIQUE,
     role  char(8) NOT NULL,
     age   INTEGER NOT NULL,
-    state char(2) NOT NULL
+    state_id INTEGER REFERENCES states (id) NOT NULL
 );
 
 CREATE TABLE categories (
@@ -38,7 +44,7 @@ CREATE TABLE orders (
 
 
 -- similar products indices
-CREATE INDEX index_products_name N products(name);
+CREATE INDEX index_products_name ON products(name);
 CREATE INDEX index_orders_userid ON orders(user_id);
 
 -- analytics indices
