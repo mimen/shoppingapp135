@@ -84,6 +84,11 @@ app.directive("analytics", [function (){
                 ctlr.rows = data.length;
                 ctlr.cols = data[0].length;
 
+
+                ctlr.width = 0;
+                if (ctlr.cols < 50) ctlr.width = (ctlr.cols + 1) * 100;
+                else ctlr.width = 5100;
+                
                 //if (ctlr.rows < 50) $('#incRows').hide();
                 //if (ctlr.cols < 50) $('#incCols').hide();
 
