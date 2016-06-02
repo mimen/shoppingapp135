@@ -195,11 +195,48 @@ router.get('/analytics/', function(req, res, next){
 	});
 })
 
+router.get('/precompute/', function(req, res, next){
+	db.precompute(function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else {
+			res.json({"error":"error"});
+		}
+	});
+})
+
+router.get('/update/', function(req, res, next){
+	db.update(function(success){
+		if (success){
+			res.json({"success":"success"});
+		}
+		else {
+			res.json({"error":"error"});
+		}
+	});
+})
+
 router.post('/createOrders/', function(req, res, next){
 	console.log("received req");
 	db.createOrders(req.body.num_orders, function(success){
 		if (success){
 			res.json({"success":"success"});
+		}
+		else {
+			res.json({"error":"error"});
+		}
+	})
+})
+
+router.get('/headers/', function(req, res, next){
+	db.getHeaders(req.query.category, function(product_headers, state_headers, success){
+		if (success){
+			var body = {
+				product_headers: product_headers,
+				state_headers: state_headers
+			}
+			res.json(body);
 		}
 		else {
 			res.json({"error":"error"});
