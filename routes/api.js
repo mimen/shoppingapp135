@@ -231,26 +231,11 @@ router.post('/createOrders/', function(req, res, next){
 	})
 })
 
-router.post('/refresh/', function(req, res, next){
+router.get('/refresh/', function(req, res, next){
 	console.log("refresh table request");
-	db.update(function(success){
+	db.updateStuff(function(results, success){
 		if (success){
-			console.log("precomputed tables updated");
-			var body = {
-				products: req.body.products,
-				states: req.body.states
-			}
-			var cells = [[], [], [], [], [], [], [], [], [], [], 
-						 [], [], [], [], [], [], [], [], [], [], 
-						 [], [], [], [], [], [], [], [], [], [], 
-						 [], [], [], [], [], [], [], [], [], [], 
-						 [], [], [], [], [], [], [], [], [], []];
-
-			getCells(cells, 0, 0, body, function(cells){
-				console.log("cells retreived");
-				body.cells = cells;
-				res.json(body);
-			});
+			res.json(results);
 		}
 		else{
 			res.json({"error":"error"});

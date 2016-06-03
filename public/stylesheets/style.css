@@ -89,3 +89,12 @@ table, th, td {
 .x {
     display: none;
 }
+
+.updated_cell {
+    color: red;
+    font-weight: bold;
+}
+
+.red_cell {
+    color: red;
+}

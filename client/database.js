@@ -687,6 +687,68 @@ getCell = function(product_id, state_id, done){
 }
 
 
+updateStuff = function(done){
+
+  var query1 = "SELECT s.name AS state, s.id AS state_id, COALESCE(SUM(o.price*o.quantity), 0) AS total " + 
+               "FROM states s, users u, new_orders o, products p " + 
+               "WHERE u.state_id = s.id " + 
+               "AND u.id = o.user_id " + 
+               "AND p.id = o.product_id " + 
+               "GROUP BY s.name, s.id " + 
+               "ORDER BY total DESC"
+
+  var query2 = "SELECT p.name AS product, p.id AS product_id, COALESCE(SUM(o.price*o.quantity), 0) AS total " + 
+               "FROM products p, new_orders o " + 
+               "WHERE p.id = o.product_id " + 
+               "GROUP BY p.id, p.name " + 
+               "ORDER BY total DESC ";
+
+  var query3 = "SELECT s.id AS state_id, p.id AS product_id, COALESCE(SUM(o.price*o.quantity), 0) AS total " + 
+               "FROM new_orders o, states s, products p, users u " + 
+               "WHERE u.state_id = s.id " + 
+               "AND o.product_id = p.id " + 
+               "AND o.user_id = u.id " + 
+               "GROUP BY s.id, p.id " + 
+               "ORDER BY s.id";
+
+  db.any(query1)
+    .then(function (states) {
+
+      db.any(query2)
+        .then(function (products) {
+
+          db.any(query3)
+            .then(function (cells) {
+
+              var body = {
+                state_headers: states,
+                product_headers: products,
+                cells: cells
+              }
+
+              done(body, true);
+
+            })
+            .catch(function (error) {
+              console.log(error);
+              done(null, false);
+          });
+          
+        })
+        .catch(function (error) {
+          console.log(error);
+          done(null, false);
+      });
+
+    })
+    .catch(function (error) {
+      console.log(error);
+      done(null, false);
+  });
+
+}
+
+
 module.exports = {
 	instance: db,
 	addUser: addUser,
@@ -710,5 +772,6 @@ module.exports = {
   precompute: precompute,
   update: update,
   getHeaders: getHeaders,
-  getCell: getCell
+  getCell: getCell,
+  updateStuff: updateStuff
 }

@@ -56,18 +56,18 @@ app.directive("analytics", [function (){
                 
                 for (var i = 0; i < ctlr.products.length; i++){
                     var product = ctlr.products[i];
-                    tablehead += "<td><b>" + product.product + " ($" + product.total + ")</b></td>";
+                    tablehead += "<td id='ph" + product.product_id + "' data-price=" + parseFloat(product.total) + "><b>" + product.product + " ($" + rounding(product.total) + ")</b></td>";
                 }
 
                 for (var i = 0; i < ctlr.states.length; i++){
                     var state = ctlr.states[i];
                     if (ctlr.products.length > 0){
                         table += "</tr><tr id='state" + state.state_id + "'>";
-                        table += "<td><b>" + state.state + " ($" + state.total + ")</b></td>";
+                        table += "<td class='state_header' data-price=" + parseFloat(state.total) + "><b>" + state.state + " ($" + rounding(state.total) + ")</b></td>";
 
                         for (var j = 0; j < ctlr.products.length; j++){
                             var product = ctlr.products[j];
-                            table += "<td id='product" + product.product_id + "'>" + ctlr.cells[i][j].total + "</td>";
+                            table += "<td data-price=" + parseFloat(ctlr.cells[i][j].total) + " id='product" + product.product_id + "'>" + rounding(ctlr.cells[i][j].total) + "</td>";
                         }
 
                     }
@@ -76,6 +76,41 @@ app.directive("analytics", [function (){
                 var complete = tablehead + table + tablefoot;
                 document.getElementById("table").innerHTML = complete;
                 
+            }
+
+            ctlr.updateTable = function(data){
+
+                for (var i = 0; i < data.state_headers.length; i++){
+                    var state = data.state_headers[i];
+                    var old_total = $('#state' + state.state_id + ' > .state_header').attr("data-price");
+                    var new_total = rounding(parseFloat(old_total) + parseFloat(state.total));
+                    $('#state' + state.state_id + ' > .state_header').addClass('updated_cell');
+                    $('#state' + state.state_id + ' > .state_header').text("" + state.state + " ($" + new_total + ")");
+                }
+
+                for (var i = 0; i < data.product_headers.length; i++){
+                    var product = data.product_headers[i];
+                    console.log($('#ph' + product.product_id));
+                    var old_total = $('#ph' + product.product_id).attr("data-price");
+                    var new_total = rounding(parseFloat(old_total) + parseFloat(product.total));
+                    //console.log(parseFloat(old_total));
+                    //console.log(parseFloat(product.total));
+                    //console.log(new_total);
+                    $('#ph' + product.product_id).addClass('updated_cell');
+                    $('#ph' + product.product_id).text("" + product.product + " ($" + new_total + ")");
+                }
+
+                for (var i = 0; i < data.cells.length; i++){
+                    var cell = data.cells[i];
+                    var selector = '#state' + cell.state_id + ' > #product' + cell.product_id;
+                    var old_total = $(selector).attr("data-price");
+                    var new_total = rounding(parseFloat(old_total) + parseFloat(cell.total));
+                    //console.log(parseFloat(old_total));
+                    //console.log(parseFloat(product.total));
+                    //console.log(new_total);
+                    $(selector).addClass('red_cell');
+                    $(selector).text("" + new_total);
+                }
             }
 
             ctlr.createOrders = function(){
@@ -113,24 +148,16 @@ app.directive("analytics", [function (){
 
             ctlr.refresh = function(){
                 var href = 'http://localhost:3000/api/refresh';
-                var body = {
-                    products: ctlr.products,
-                    states: ctlr.states
-                }
-                $http.post(href, body)
+                $http.get(href)
                     .success(function(data, status, headers, config){
                         console.log("success");
-                        ctlr.cols = data.products.length;
-                        ctlr.products = data.products;
-                        ctlr.states = data.states;
-                        ctlr.cells = data.cells;
-                        ctlr.buildTable();
                         console.log(data);
+                        ctlr.updateTable(data);
                     })
                     .error(function(data, status, headers, config){
                         console.log("failed");
                     });
-                    
+
             }
 
             ctlr.loadCategories();
@@ -140,3 +167,7 @@ app.directive("analytics", [function (){
         controllerAs: "ctlr"
     };
 }]);
+
+var rounding = function(num){
+    return Math.round(num * 100) / 100;
+}
