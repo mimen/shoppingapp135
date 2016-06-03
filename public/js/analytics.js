@@ -54,7 +54,6 @@ app.directive("analytics", [function (){
                 if (ctlr.cols < 50) ctlr.width = (ctlr.cols + 1) * 100;
                 else ctlr.width = 5100;
                 
-
                 for (var i = 0; i < ctlr.products.length; i++){
                     var product = ctlr.products[i];
                     tablehead += "<td><b>" + product.product + " ($" + product.total + ")</b></td>";
@@ -63,11 +62,12 @@ app.directive("analytics", [function (){
                 for (var i = 0; i < ctlr.states.length; i++){
                     var state = ctlr.states[i];
                     if (ctlr.products.length > 0){
-                        table += "</tr><tr>";
+                        table += "</tr><tr id='state" + state.state_id + "'>";
                         table += "<td><b>" + state.state + " ($" + state.total + ")</b></td>";
 
                         for (var j = 0; j < ctlr.products.length; j++){
-                            table += "<td>" + ctlr.cells[j][i].total + "</td>";
+                            var product = ctlr.products[j];
+                            table += "<td id='product" + product.product_id + "'>" + ctlr.cells[i][j].total + "</td>";
                         }
 
                     }
@@ -94,8 +94,30 @@ app.directive("analytics", [function (){
             }
 
             ctlr.getData = function(category_id){
+                console.log(category_id);
                 var href = 'http://localhost:3000/api/headers?category=' + category_id;
                 $http.get(href)
+                    .success(function(data, status, headers, config){
+                        console.log("success");
+                        console.log(data);
+                        ctlr.cols = data.products.length;
+                        ctlr.products = data.products;
+                        ctlr.states = data.states;
+                        ctlr.cells = data.cells;
+                        ctlr.buildTable();
+                    })
+                    .error(function(data, status, headers, config){
+                        console.log("failed");
+                    });
+            }
+
+            ctlr.refresh = function(){
+                var href = 'http://localhost:3000/api/refresh';
+                var body = {
+                    products: ctlr.products,
+                    states: ctlr.states
+                }
+                $http.post(href, body)
                     .success(function(data, status, headers, config){
                         console.log("success");
                         ctlr.cols = data.products.length;
@@ -108,6 +130,7 @@ app.directive("analytics", [function (){
                     .error(function(data, status, headers, config){
                         console.log("failed");
                     });
+                    
             }
 
             ctlr.loadCategories();

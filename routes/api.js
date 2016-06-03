@@ -221,34 +221,74 @@ router.post('/createOrders/', function(req, res, next){
 	console.log("received req");
 	db.createOrders(req.body.num_orders, function(success){
 		if (success){
+			console.log("success");
 			res.json({"success":"success"});
 		}
 		else {
+			console.log("fail");
 			res.json({"error":"error"});
 		}
 	})
 })
 
-router.get('/headers/', function(req, res, next){
-	db.getHeaders(req.query.category, function(product_headers, state_headers, success){
+router.post('/refresh/', function(req, res, next){
+	console.log("refresh table request");
+	db.update(function(success){
 		if (success){
-			console.log("got headers");
+			console.log("precomputed tables updated");
 			var body = {
-				products: product_headers,
-				states: state_headers
+				products: req.body.products,
+				states: req.body.states
 			}
-
-			var cells = [[], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], 
-						 [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], [], 
+			var cells = [[], [], [], [], [], [], [], [], [], [], 
+						 [], [], [], [], [], [], [], [], [], [], 
+						 [], [], [], [], [], [], [], [], [], [], 
+						 [], [], [], [], [], [], [], [], [], [], 
 						 [], [], [], [], [], [], [], [], [], []];
 
 			getCells(cells, 0, 0, body, function(cells){
+				console.log("cells retreived");
 				body.cells = cells;
 				res.json(body);
 			});
-
 		}
-		else {
+		else{
+			res.json({"error":"error"});
+		}
+	})
+
+})
+
+router.get('/headers/', function(req, res, next){
+	console.log("run query request");
+	db.update(function(success){
+		if (success){
+			console.log("precomputed tables updated");
+			db.getHeaders(req.query.category, function(product_headers, state_headers, success){
+				if (success){
+					console.log("headers retreived");
+					var body = {
+						products: product_headers,
+						states: state_headers
+					}
+					var cells = [[], [], [], [], [], [], [], [], [], [], 
+								 [], [], [], [], [], [], [], [], [], [], 
+								 [], [], [], [], [], [], [], [], [], [], 
+								 [], [], [], [], [], [], [], [], [], [], 
+								 [], [], [], [], [], [], [], [], [], []];
+
+					getCells(cells, 0, 0, body, function(cells){
+						console.log("cells retreived");
+						body.cells = cells;
+						res.json(body);
+					});
+				}
+				else {
+					res.json({"error":"error"});
+				}
+			})
+		}
+		else{
 			res.json({"error":"error"});
 		}
 	})
@@ -271,6 +311,9 @@ var getCells = function(cells, p, s, body, done){
         		p++;
                 if (p == body.products.length) s++;
                 getCells(cells, p, s, body, done);
+        	}
+        	else {
+        		done(cells);
         	}
         })
     }

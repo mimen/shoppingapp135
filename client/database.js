@@ -453,7 +453,7 @@ precompute = function(done){
               'CREATE INDEX index_product ON analytics(product_id); ' + 
               'CREATE INDEX index_state ON analytics(state_id); ';
 
-  console.log(query);
+  //console.log(query);
 
   db.any(query)
     .then(function (data) {
@@ -469,37 +469,45 @@ precompute = function(done){
 
 update = function(done){
 
-var query = 'UPDATE state_headers s ' + 
-            'SET sum = (s.sum + l.sum) ' + 
-            'FROM (SELECT st.name AS state, p.category_id AS category_id, COALESCE(SUM(s.price*s.quantity), 0) AS sum ' + 
-            'FROM states st, users u, new_orders s, products p ' + 
-            'WHERE u.state=st.name ' + 
-            'AND u.id = s.user_id ' + 
-            'AND p.id = s.product_id ' + 
-            'GROUP BY st.name, category_id) l ' + 
-            'WHERE s.state = l.state AND s.category_id = l.category_id; ' + 
+var query = 'UPDATE state_headers x ' + 
+            'SET total= (x.total + y.total) ' + 
+            'FROM ' + 
+            '(SELECT s.name AS state, s.id AS state_id, p.category_id AS category_id, COALESCE(SUM(o.price*o.quantity), 0) AS total ' + 
+            'FROM new_orders o, states s, users u, products p ' + 
+            'WHERE u.state_id = s.id ' + 
+            'AND p.id = o.product_id ' + 
+            'AND u.id = o.user_id ' + 
+            'GROUP BY s.id, s.name, category_id) y ' + 
+            'WHERE x.state_id = y.state_id ' + 
+            'AND x.category_id = y.category_id; ' + 
 
-            'UPDATE product_headers s ' + 
-            'SET sum = (s.sum + l.sum) ' + 
-            'FROM (SELECT p.name AS name, p.id AS product_id, p.category_id AS category_id, COALESCE(SUM(s.price*s.quantity), 0) AS sum ' + 
-            'FROM products p, new_orders s ' + 
-            'WHERE p.id=s.product_id ' + 
+            'UPDATE product_headers x ' + 
+            'SET total = (x.total + y.total) ' + 
+            'FROM ' + 
+            '(SELECT p.name AS product, p.id AS product_id, p.category_id AS category_id, COALESCE(SUM(o.price*o.quantity), 0) AS total ' + 
+            'FROM new_orders o, products p ' + 
+            'WHERE p.id = o.product_id ' + 
             'GROUP BY p.id, p.name, p.category_id ' + 
-            'ORDER BY sum DESC) l ' + 
-            'WHERE s.product_id = l.product_id AND s.category_id = l.category_id; ' + 
+            'ORDER BY total DESC) y ' + 
+            'WHERE x.category_id = y.category_id ' + 
+            'AND x.product_id = y.product_id; ' + 
 
-            'UPDATE analytics s ' + 
-            'SET sum = (s.sum + l.sum) ' + 
-            'FROM (SELECT st.name AS state, p.name AS product, COALESCE(SUM(s.price*s.quantity), 0) AS sum ' + 
-            'FROM new_orders s, states st, products p, users u ' + 
-            'WHERE u.state=st.name ' + 
-            'AND s.product_id=p.id ' + 
-            'AND s.user_id=u.id ' + 
-            'GROUP BY st.name, p.name ' + 
-            'ORDER BY st.name) l ' + 
-            'WHERE s.state = l.state AND s.product = l.product; ' + 
+            'UPDATE analytics x ' + 
+            'SET total = (x.total + y.total) ' + 
+            'FROM ' + 
+            '(SELECT s.id AS state_id, p.id AS product_id, COALESCE(SUM(o.price*o.quantity), 0) AS total ' + 
+            'FROM new_orders o, products p, states s, users u ' + 
+            'WHERE o.product_id = p.id ' + 
+            'AND o.user_id = u.id ' + 
+            'AND u.state_id = s.id ' + 
+            'GROUP BY s.id, p.id ' + 
+            'ORDER BY s.id) y ' + 
+            'WHERE x.state_id = y.state_id ' + 
+            'AND x.product_id = y.product_id; ' + 
 
-            'DELETE FROM new_orders *; ';
+            'DELETE FROM new_orders *;';
+
+  //console.log(query);
 
   db.any(query)
     .then(function (data) {
@@ -535,11 +543,6 @@ getVectors = function(done){
 
   var query2 = 'SELECT COUNT(*) FROM users;';
 
-  console.log("query1: ");
-  console.log(query1);
-  console.log("query2: ");
-  console.log(query2);
-
   db.any(query1)
     .then(function (vectors) {
         db.any(query2)
@@ -563,14 +566,17 @@ createOrders = function(num_orders, done){
   db.any("SELECT count(*) FROM orders")
     .then( function (old_total) {
 
+
       var random_num = Math.random() * 30 + 1;
       if (num_orders < random_num) random_num = num_orders;
+
+      console.log(num_orders);
+      console.log(random_num);
 
       var query = "SELECT proc_insert_orders(" + parseInt(num_orders) + "," + parseInt(random_num) + ")";
 
       db.any(query)
         .then( function (data) {
-
           var query2 = "INSERT INTO new_orders" +
                         "(user_id, product_id, quantity, price, is_cart)" +
                         "(SELECT user_id, product_id, quantity, price, is_cart" + 
@@ -608,9 +614,18 @@ getHeaders = function(category, done){
                  "ORDER BY total DESC " + 
                  "LIMIT 50;";
 
-    var query2 = "SELECT * FROM state_headers " +
+    var query2 = "SELECT y.name as state, y.id as state_id, COALESCE(total, 0) as total " + 
+                 "FROM " + 
+                  "(SELECT state, state_id, SUM(total) as total  " + 
+                  "FROM state_headers  " + 
                  "WHERE category_id = " + category + " " + 
-                 "ORDER BY total DESC;";
+                  "GROUP BY state, state_id  " + 
+                  "ORDER BY total DESC, state ASC) x " + 
+                  "FULL OUTER JOIN " + 
+                  "(SELECT * FROM states) y " + 
+                  "ON x.state = y.name " + 
+                  "AND x.state_id = y.id " + 
+                  "ORDER BY total DESC;";
   }
   else {
     var query1 = "SELECT product, product_id, SUM(total) as total FROM product_headers " +
@@ -618,10 +633,20 @@ getHeaders = function(category, done){
                  "ORDER BY total DESC " + 
                  "LIMIT 50;";
 
-    var query2 = "SELECT state, state_id, SUM(total) as total FROM state_headers " +
-                 "GROUP BY state, state_id " + 
-                 "ORDER BY total DESC;";
+    var query2 = "SELECT y.name as state, y.id as state_id, COALESCE(total, 0) as total " + 
+                 "FROM " + 
+                  "(SELECT state, state_id, SUM(total) as total  " + 
+                  "FROM state_headers  " + 
+                  "GROUP BY state, state_id  " + 
+                  "ORDER BY total DESC, state ASC) x " + 
+                  "FULL OUTER JOIN " + 
+                  "(SELECT * FROM states) y " + 
+                  "ON x.state = y.name " + 
+                  "AND x.state_id = y.id " + 
+                  "ORDER BY total DESC;";
   }
+
+  console.log(query2);
   
 
   db.any(query1)
