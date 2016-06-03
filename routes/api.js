@@ -233,7 +233,8 @@ router.post('/createOrders/', function(req, res, next){
 
 router.get('/refresh/', function(req, res, next){
 	console.log("refresh table request");
-	db.updateStuff(function(results, success){
+	console.log(req.query.category);
+	db.updateStuff(req.query.category, function(results, success){
 		if (success){
 			res.json(results);
 		}

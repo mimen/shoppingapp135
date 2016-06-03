@@ -687,38 +687,46 @@ getCell = function(product_id, state_id, done){
 }
 
 
-updateStuff = function(done){
+updateStuff = function(category, done){
 
   var query1 = "SELECT s.name AS state, s.id AS state_id, COALESCE(SUM(o.price*o.quantity), 0) AS total " + 
                "FROM states s, users u, new_orders o, products p " + 
                "WHERE u.state_id = s.id " + 
                "AND u.id = o.user_id " + 
-               "AND p.id = o.product_id " + 
-               "GROUP BY s.name, s.id " + 
+               "AND p.id = o.product_id ";
+  if (category != 'all') query1 += "AND p.category_id = " + category + " ";
+  query1 +=    "GROUP BY s.name, s.id " + 
                "ORDER BY total DESC"
 
   var query2 = "SELECT p.name AS product, p.id AS product_id, COALESCE(SUM(o.price*o.quantity), 0) AS total " + 
                "FROM products p, new_orders o " + 
-               "WHERE p.id = o.product_id " + 
-               "GROUP BY p.id, p.name " + 
+               "WHERE p.id = o.product_id ";
+  if (category != 'all') query2 += "AND p.category_id = " + category + " ";
+  query2 +=    "GROUP BY p.id, p.name " + 
                "ORDER BY total DESC ";
 
   var query3 = "SELECT s.id AS state_id, p.id AS product_id, COALESCE(SUM(o.price*o.quantity), 0) AS total " + 
                "FROM new_orders o, states s, products p, users u " + 
                "WHERE u.state_id = s.id " + 
                "AND o.product_id = p.id " + 
-               "AND o.user_id = u.id " + 
-               "GROUP BY s.id, p.id " + 
+               "AND o.user_id = u.id ";
+  if (category != 'all') query3 += "AND p.category_id = " + category + " ";
+  query3 +=    "GROUP BY s.id, p.id " + 
                "ORDER BY s.id";
+
+  console.log(query1);
 
   db.any(query1)
     .then(function (states) {
+      console.log("1");
 
       db.any(query2)
         .then(function (products) {
+      console.log("2");
 
           db.any(query3)
             .then(function (cells) {
+      console.log("3");
 
               var body = {
                 state_headers: states,

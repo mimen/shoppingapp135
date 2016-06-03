@@ -147,7 +147,8 @@ app.directive("analytics", [function (){
             }
 
             ctlr.refresh = function(){
-                var href = 'http://localhost:3000/api/refresh';
+                var category_id = $('#categorySelect').val();
+                var href = 'http://localhost:3000/api/refresh?category=' + category_id;
                 $http.get(href)
                     .success(function(data, status, headers, config){
                         console.log("success");
