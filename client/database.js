@@ -397,33 +397,13 @@ next = function(done, factor, category, query){
 
 precompute = function(done){
 
-  var query = 'DROP TABLE IF EXISTS state_headers CASCADE; ' + 
-
-              'CREATE TABLE state_headers( ' + 
-              '  id          SERIAL PRIMARY KEY, ' + 
-              '  state       TEXT NOT NULL, ' + 
-              '  state_id    INTEGER REFERENCES states (id) NOT NULL, ' + 
-              '  category_id INTEGER REFERENCES categories (id) NOT NULL, ' + 
-              '  total       FLOAT NOT NULL ' + 
-              '); ' + 
-
-              'INSERT INTO state_headers(state, state_id, category_id, total) ' + 
+  var query = 'INSERT INTO state_headers(state, state_id, category_id, total) ' + 
               '(SELECT s.name, s.id, p.category_id AS category_id, COALESCE(SUM(o.price*o.quantity), 0) AS total ' + 
               'FROM states s ' + 
               'LEFT OUTER JOIN users u ON u.state_id = s.id ' + 
               'LEFT OUTER JOIN orders o ON u.id = o.user_id ' + 
               'INNER JOIN products p ON p.id = o.product_id ' + 
               'GROUP BY s.id, s.name, category_id); ' + 
-
-              'DROP TABLE IF EXISTS product_headers CASCADE; ' + 
-
-              'CREATE TABLE product_headers( ' + 
-              '  id          SERIAL PRIMARY KEY, ' + 
-              '  product     TEXT NOT NULL, ' + 
-              '  product_id  INTEGER REFERENCES products (id) NOT NULL, ' + 
-              '  category_id INTEGER REFERENCES categories (id) NOT NULL, ' + 
-              '  total       FLOAT NOT NULL ' + 
-              '); ' + 
 
               'INSERT INTO product_headers(product, product_id, category_id, total) ' + 
               '(SELECT p.name AS name, p.id AS product_id, p.category_id AS category_id, COALESCE(SUM(s.price*s.quantity), 0) AS total ' + 
@@ -432,14 +412,6 @@ precompute = function(done){
               'GROUP BY p.id, p.name, p.category_id ' + 
               'ORDER BY total DESC); ' + 
 
-              'DROP TABLE IF EXISTS analytics CASCADE; ' + 
-
-              'CREATE TABLE analytics( ' + 
-              '  id          SERIAL PRIMARY KEY, ' + 
-              '  state_id    INTEGER REFERENCES states (id) NOT NULL, ' + 
-              '  product_id  INTEGER REFERENCES products (id) NOT NULL, ' +
-              '  total       FLOAT NOT NULL ' + 
-              '); ' + 
 
               'INSERT INTO analytics(state_id, product_id, total) ' + 
               '(SELECT s.id, p.id, COALESCE(SUM(o.price*o.quantity), 0) AS total ' + 
@@ -448,10 +420,7 @@ precompute = function(done){
               'LEFT OUTER JOIN users u ON u.state_id = s.id ' + 
               'LEFT OUTER JOIN orders o ON o.product_id = p.id AND o.user_id = u.id ' + 
               'GROUP BY s.id, p.id ' + 
-              'ORDER BY s.id); ' + 
-
-              'CREATE INDEX index_product ON analytics(product_id); ' + 
-              'CREATE INDEX index_state ON analytics(state_id); ';
+              'ORDER BY s.id);';
 
   //console.log(query);
 
