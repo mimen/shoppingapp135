@@ -714,27 +714,52 @@ updateStuff = function(category, done){
   query3 +=    "GROUP BY s.id, p.id " + 
                "ORDER BY s.id";
 
+
+  if (category != 'all'){
+    var query4 = "SELECT * FROM product_headers " +
+                 "WHERE category_id = " + category + " " + 
+                 "ORDER BY total DESC " + 
+                 "LIMIT 50;";
+  }
+  else {
+    var query4 = "SELECT product, product_id, SUM(total) as total FROM product_headers " +
+                 "GROUP BY product, product_id " + 
+                 "ORDER BY total DESC " + 
+                 "LIMIT 50;";
+  }
+
+
+
+
   console.log(query1);
 
   db.any(query1)
     .then(function (states) {
-      console.log("1");
 
       db.any(query2)
         .then(function (products) {
-      console.log("2");
 
           db.any(query3)
             .then(function (cells) {
-      console.log("3");
 
-              var body = {
-                state_headers: states,
-                product_headers: products,
-                cells: cells
-              }
+              db.any(query4)
+                .then(function (top50) {
 
-              done(body, true);
+                  var body = {
+                    state_headers: states,
+                    product_headers: products,
+                    cells: cells,
+                    top50: top50
+                  }
+
+                  done(body, true);
+
+                })
+                .catch(function (error) {
+                  console.log(error);
+                  done(null, false);
+              });
+
 
             })
             .catch(function (error) {

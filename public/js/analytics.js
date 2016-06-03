@@ -90,12 +90,8 @@ app.directive("analytics", [function (){
 
                 for (var i = 0; i < data.product_headers.length; i++){
                     var product = data.product_headers[i];
-                    console.log($('#ph' + product.product_id));
                     var old_total = $('#ph' + product.product_id).attr("data-price");
                     var new_total = rounding(parseFloat(old_total) + parseFloat(product.total));
-                    //console.log(parseFloat(old_total));
-                    //console.log(parseFloat(product.total));
-                    //console.log(new_total);
                     $('#ph' + product.product_id).addClass('updated_cell');
                     $('#ph' + product.product_id).text("" + product.product + " ($" + new_total + ")");
                 }
@@ -105,12 +101,30 @@ app.directive("analytics", [function (){
                     var selector = '#state' + cell.state_id + ' > #product' + cell.product_id;
                     var old_total = $(selector).attr("data-price");
                     var new_total = rounding(parseFloat(old_total) + parseFloat(cell.total));
-                    //console.log(parseFloat(old_total));
-                    //console.log(parseFloat(product.total));
-                    //console.log(new_total);
                     $(selector).addClass('red_cell');
                     $(selector).text("" + new_total);
                 }
+
+                var newtop = data.top50;
+                var oldtop = ctlr.products;
+
+                var matching = [];
+
+                for (var i = 0; i < newtop.length; i++){
+                    for (var j = i; j < oldtop.length; j++){
+                        var p1 = newtop[i];
+                        var p2 = oldtop[j];
+                        if (p1.product_id == p2.product_id){
+                            break;
+                        }
+                        if (j == oldtop.length - 1){
+                            var id = p2.product_id;
+                            $('#ph' + id).addClass("purple_cell");
+                            $('#product' + id).addClass("purple_cell");
+                        }
+                    }
+                }
+
             }
 
             ctlr.createOrders = function(){
